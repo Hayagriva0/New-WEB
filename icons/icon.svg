@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#648cff"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#648cff"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7ba3ff"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Outer ring — slow spin -->
+  <circle cx="60" cy="60" r="54" fill="none" stroke="url(#g1)" stroke-width="2" opacity="0.35">
+    <animateTransform attributeName="transform" type="rotate"
+      from="0 60 60" to="360 60 60" dur="40s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Orbit ring 1 — counter-spin -->
+  <ellipse cx="60" cy="60" rx="36" ry="18" fill="none" stroke="url(#g2)" stroke-width="1.5" opacity="0.3">
+    <animateTransform attributeName="transform" type="rotate"
+      from="0 60 60" to="-360 60 60" dur="25s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- Orbit ring 2 — spin -->
+  <ellipse cx="60" cy="60" rx="38" ry="16" fill="none" stroke="url(#g2)" stroke-width="1.2" opacity="0.2">
+    <animateTransform attributeName="transform" type="rotate"
+      from="60 60 60" to="420 60 60" dur="30s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- Core glow layers -->
+  <circle cx="60" cy="60" r="16" fill="url(#g2)" opacity="0.08">
+    <animate attributeName="r" values="16;18;16" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.08;0.14;0.08" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="60" cy="60" r="10" fill="url(#g2)" opacity="0.18">
+    <animate attributeName="opacity" values="0.18;0.28;0.18" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="60" cy="60" r="5" fill="#7ba3ff" filter="url(#glow)">
+    <animate attributeName="r" values="5;6;5" dur="2s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Orbiting dot 1 -->
+  <circle cx="96" cy="60" r="3" fill="#7ba3ff" opacity="0.9">
+    <animateTransform attributeName="transform" type="rotate"
+      from="0 60 60" to="360 60 60" dur="12s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.9;0.4;0.9" dur="6s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Orbiting dot 2 -->
+  <circle cx="24" cy="60" r="2.5" fill="#c084fc" opacity="0.7">
+    <animateTransform attributeName="transform" type="rotate"
+      from="120 60 60" to="480 60 60" dur="18s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.7;0.3;0.7" dur="9s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Orbiting dot 3 -->
+  <circle cx="60" cy="96" r="2" fill="#648cff" opacity="0.5">
+    <animateTransform attributeName="transform" type="rotate"
+      from="240 60 60" to="600 60 60" dur="15s" repeatCount="indefinite"/>
+  </circle>
+</svg>

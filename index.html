@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New WEB</title>
+  <meta name="description" content="A premium, privacy-focused new tab experience.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- ===== TOP BAR ===== -->
+  <div class="top-bar">
+    <!-- Weather Widget (left) -->
+    <div id="weather-widget" class="weather-widget" style="display:none;">
+      <span id="weather-icon" class="weather-emoji"></span>
+      <div class="weather-details">
+        <div class="weather-main">
+          <span id="weather-temp" class="weather-temp"></span>
+          <span id="weather-desc" class="weather-desc"></span>
+        </div>
+        <div class="weather-sub">
+          <span id="weather-city" class="weather-city"></span>
+          <span id="weather-hilo" class="weather-hilo"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="top-bar-spacer"></div>
+
+    <!-- Settings Gear (right) -->
+    <button id="settings-btn" class="settings-btn" aria-label="Settings" title="Settings">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3" />
+        <path
+          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- ===== SETTINGS PANEL ===== -->
+  <div id="settings-panel" class="settings-panel">
+    <h3 class="settings-title">Settings</h3>
+
+    <div class="settings-group">
+      <label class="settings-label" for="search-engine-select">Search Engine</label>
+      <select id="search-engine-select" class="settings-select" title="Select search engine">
+        <option value="duckduckgo">DuckDuckGo</option>
+        <option value="google">Google</option>
+        <option value="brave">Brave</option>
+      </select>
+    </div>
+
+    <div class="settings-group">
+      <label class="settings-label">Weather</label>
+      <div class="settings-toggle-row">
+        <span>Enable Weather</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="weather-toggle" title="Toggle weather">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <p class="settings-hint">Uses your location. No API key needed.</p>
+    </div>
+
+    <div class="settings-group">
+      <label class="settings-label">Clock</label>
+      <div class="settings-toggle-row">
+        <span>24-hour format</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="clock-format-toggle" title="Toggle 24h clock">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <button id="close-settings-btn" class="settings-close-btn">Done</button>
+  </div>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-container">
+
+    <!-- Clock / Greeting -->
+    <div class="greeting-section fade-in">
+      <div id="clock" class="clock">00:00</div>
+      <div id="greeting" class="greeting">Good evening</div>
+      <div id="date-display" class="date-display"></div>
+    </div>
+
+    <!-- Logo -->
+    <div class="logo-container fade-in">
+      <img src="icons/icon.svg" alt="New WEB" class="logo" width="64" height="64">
+    </div>
+
+    <!-- Mode Toggle -->
+    <div class="toggle-container fade-in">
+      <div class="toggle-pill">
+        <div class="toggle-slider-bg" id="toggle-highlight"></div>
+        <button class="toggle-option active" id="toggle-search" data-mode="search">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          Search
+        </button>
+        <button class="toggle-option" id="toggle-ai" data-mode="ai">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+          </svg>
+          Duck.ai
+        </button>
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container fade-in">
+      <div class="search-wrapper">
+        <input type="text" id="search-input" class="search-input" placeholder="Search privately" autocomplete="off"
+          autofocus>
+        <button id="search-btn" class="search-icon-btn" aria-label="Search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+        <div id="suggestions-dropdown" class="suggestions-dropdown"></div>
+      </div>
+    </div>
+
+    <!-- Favourites -->
+    <section class="favourites-section fade-in-delay">
+      <div class="section-header">
+        <h2 class="section-title">Favourites</h2>
+        <button id="add-favourite-btn" class="add-btn" title="Add favourite">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Add
+        </button>
+      </div>
+      <div id="favourites-grid" class="sites-grid"></div>
+    </section>
+
+    <!-- Top Sites -->
+    <section class="top-sites-section fade-in-delay">
+      <h2 class="section-title">Frequently Visited</h2>
+      <div id="top-sites-grid" class="sites-grid"></div>
+    </section>
+  </main>
+
+  <!-- ===== ADD FAVOURITE MODAL ===== -->
+  <div id="favourite-modal" class="modal-overlay" style="display:none; opacity:0; pointer-events:none;">
+    <div class="modal-card">
+      <h3 class="modal-title">Add Favourite</h3>
+      <label class="settings-label" for="fav-name-input">Name</label>
+      <input type="text" id="fav-name-input" class="settings-input" placeholder="e.g. YouTube" maxlength="24">
+      <label class="settings-label" for="fav-url-input">URL</label>
+      <input type="url" id="fav-url-input" class="settings-input" placeholder="https://example.com">
+      <div class="modal-actions">
+        <button id="fav-cancel-btn" class="modal-btn modal-btn-cancel">Cancel</button>
+        <button id="fav-save-btn" class="modal-btn modal-btn-save">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/suggestions.js"></script>
+  <script src="js/favourites.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
