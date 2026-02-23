@@ -24,6 +24,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var engineSelect = document.getElementById('search-engine-select');
     var weatherToggle = document.getElementById('weather-toggle');
     var clockFormatToggle = document.getElementById('clock-format-toggle');
+    var topSitesToggle = document.getElementById('top-sites-toggle');
+    var notesToggle = document.getElementById('notes-toggle');
+    var topSitesSection = document.querySelector('.top-sites-section');
+    var notesSection = document.querySelector('.notes-section');
     var topSitesGrid = document.getElementById('top-sites-grid');
     var suggestionsDD = document.getElementById('suggestions-dropdown');
     var favGrid = document.getElementById('favourites-grid');
@@ -64,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 var period = h >= 12 ? 'PM' : 'AM';
                 var h12 = h % 12;
                 if (h12 === 0) h12 = 12;
-                clockEl.textContent = String(h12) + ':' + String(m).padStart(2, '0') + ' ' + period;
+                clockEl.innerHTML = String(h12) + ':' + String(m).padStart(2, '0') + '<span style="margin-left: 8px;">' + period + '</span>';
             }
 
             /* Greeting */
@@ -241,6 +245,18 @@ document.addEventListener('DOMContentLoaded', function () {
      * FEATURE 9: Top Sites (card-style like reference)
      * ------------------------------------------------------- */
     try {
+        Storage.get('topSitesEnabled').then(function (val) {
+            var enabled = val !== false; // default true
+            topSitesToggle.checked = enabled;
+            if (!enabled && topSitesSection) topSitesSection.style.display = 'none';
+        }).catch(function () { });
+
+        topSitesToggle.addEventListener('change', function () {
+            var enabled = topSitesToggle.checked;
+            Storage.set('topSitesEnabled', enabled).catch(function () { });
+            if (topSitesSection) topSitesSection.style.display = enabled ? '' : 'none';
+        });
+
         if (typeof chrome !== 'undefined' && chrome.topSites) {
             chrome.topSites.get(function (sites) {
                 if (!sites || !sites.length) return;
@@ -305,6 +321,50 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     } catch (err) {
         console.error('[New WEB] Top sites init failed:', err);
+    }
+
+    /* -------------------------------------------------------
+     * FEATURE 10: Quick Notes
+     * ------------------------------------------------------- */
+    try {
+        Storage.get('notesEnabled').then(function (val) {
+            var enabled = val !== false; // default true
+            notesToggle.checked = enabled;
+            if (!enabled && notesSection) notesSection.style.display = 'none';
+        }).catch(function () { });
+
+        notesToggle.addEventListener('change', function () {
+            var enabled = notesToggle.checked;
+            Storage.set('notesEnabled', enabled).catch(function () { });
+            if (notesSection) notesSection.style.display = enabled ? '' : 'none';
+        });
+
+        if (typeof NotesModule !== 'undefined') {
+            NotesModule.init().then(() => {
+                console.log('[New WEB] Quick Notes initialized');
+            });
+        }
+    } catch (err) {
+        console.error('[New WEB] Quick Notes init failed:', err);
+    }
+
+    /* -------------------------------------------------------
+     * FEATURE 11: Ambient Orb Parallax
+     * ------------------------------------------------------- */
+    try {
+        var bodyStyle = document.body.style;
+        document.addEventListener('mousemove', function (e) {
+            // Subtle parallax (-20px to 20px depending on screen position)
+            var x = (e.clientX / window.innerWidth - 0.5) * 40;
+            var y = (e.clientY / window.innerHeight - 0.5) * 40;
+            requestAnimationFrame(function () {
+                bodyStyle.setProperty('--bg-x', x + 'px');
+                bodyStyle.setProperty('--bg-y', y + 'px');
+            });
+        });
+        console.log('[New WEB] Ambient Orb Parallax initialized');
+    } catch (err) {
+        console.error('[New WEB] Ambient Orb Parallax init failed:', err);
     }
 
     console.log('[New WEB] All features initialized ✓');

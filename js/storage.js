@@ -15,6 +15,8 @@ const Storage = (() => {
     weatherLat: null,
     weatherLon: null,
     weatherCity: '',
+    notesEnabled: false,
+    topSitesEnabled: true,
     favourites: [
       { name: 'YouTube', url: 'https://www.youtube.com' },
       { name: 'Facebook', url: 'https://www.facebook.com' },
@@ -22,7 +24,10 @@ const Storage = (() => {
       { name: 'ChatGPT', url: 'https://chat.openai.com' },
       { name: 'X', url: 'https://x.com' },
       { name: 'LinkedIn', url: 'https://www.linkedin.com' },
-      { name: 'NotebookLM', url: 'https://notebooklm.google.com' }
+      { name: 'NotebookLM', url: 'https://notebooklm.google.com' },
+      { name: 'Amazon', url: 'https://www.amazon.com' },
+      { name: 'GitHub', url: 'https://github.com' },
+      { name: 'Gmail', url: 'https://mail.google.com' }
     ]
   };
 

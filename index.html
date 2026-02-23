@@ -80,6 +80,24 @@
       </div>
     </div>
 
+    <div class="settings-group">
+      <label class="settings-label">Sections</label>
+      <div class="settings-toggle-row" style="margin-bottom: 8px;">
+        <span>Frequently Visited</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="top-sites-toggle" title="Toggle Frequently Visited">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="settings-toggle-row">
+        <span>Quick Notes</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="notes-toggle" title="Toggle Quick Notes">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
     <button id="close-settings-btn" class="settings-close-btn">Done</button>
   </div>
 
@@ -95,7 +113,7 @@
 
     <!-- Logo -->
     <div class="logo-container fade-in">
-      <img src="icons/icon.svg" alt="New WEB" class="logo" width="64" height="64">
+      <img src="icons/icon.svg" alt="New WEB" class="logo" width="76" height="76">
     </div>
 
     <!-- Mode Toggle -->
@@ -158,6 +176,27 @@
       <h2 class="section-title">Frequently Visited</h2>
       <div id="top-sites-grid" class="sites-grid"></div>
     </section>
+
+    <!-- Quick Notes -->
+    <section class="notes-section fade-in-delay">
+      <div class="section-header">
+        <h2 class="section-title">Quick Notes</h2>
+      </div>
+      <div class="notes-container">
+        <div id="notes-list" class="notes-list"></div>
+        <form id="add-note-form" class="add-note-form">
+          <input type="text" id="new-note-input" class="new-note-input" placeholder="Add a new note..."
+            autocomplete="off">
+          <button type="submit" class="add-note-btn" aria-label="Add Note">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+        </form>
+      </div>
+    </section>
   </main>
 
   <!-- ===== ADD FAVOURITE MODAL ===== -->
@@ -181,6 +220,7 @@
   <script src="js/weather.js"></script>
   <script src="js/suggestions.js"></script>
   <script src="js/favourites.js"></script>
+  <script src="js/notes.js"></script>
   <script src="js/main.js"></script>
 </body>
 
