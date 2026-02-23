@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var closeSettingsBtn = document.getElementById('close-settings-btn');
     var engineSelect = document.getElementById('search-engine-select');
     var weatherToggle = document.getElementById('weather-toggle');
+    var clockStyleCards = document.querySelectorAll('.clock-style-card');
     var clockFormatToggle = document.getElementById('clock-format-toggle');
     var topSitesToggle = document.getElementById('top-sites-toggle');
     var notesToggle = document.getElementById('notes-toggle');
@@ -50,12 +51,41 @@ document.addEventListener('DOMContentLoaded', function () {
      * FEATURE 1: Clock & Greeting (with 12/24h toggle)
      * ------------------------------------------------------- */
     try {
-        /* Load clock format preference */
-        Storage.get('clock24h').then(function (val) {
-            use24h = !!val;
+        var clockStyle = 'default';
+
+        /* Load clock preferences */
+        Promise.all([
+            Storage.get('clock24h'),
+            Storage.get('clockStyle')
+        ]).then(function (vals) {
+            use24h = !!vals[0];
             if (clockFormatToggle) clockFormatToggle.checked = use24h;
+
+            if (vals[1]) {
+                clockStyle = vals[1];
+            }
+            updateClockCardsUI(clockStyle);
+            applyClockStyle(clockStyle);
+
             updateClock();
         }).catch(function () { });
+
+        function updateClockCardsUI(activeStyle) {
+            clockStyleCards.forEach(function (card) {
+                if (card.dataset.style === activeStyle) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+        }
+
+        function applyClockStyle(style) {
+            clockEl.className = 'clock'; // Reset
+            if (style && style !== 'default') {
+                clockEl.classList.add('clock-style-' + style);
+            }
+        }
 
         function updateClock() {
             var now = new Date();
@@ -88,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
             dateEl.textContent = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate() + tz;
         }
 
-        /* Clock format toggle handler */
+        /* Object listeners */
         if (clockFormatToggle) {
             clockFormatToggle.addEventListener('change', function () {
                 use24h = clockFormatToggle.checked;
@@ -96,6 +126,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateClock();
             });
         }
+
+        clockStyleCards.forEach(function (card) {
+            card.addEventListener('click', function (e) {
+                clockStyle = e.currentTarget.dataset.style;
+                Storage.set('clockStyle', clockStyle).catch(function () { });
+                updateClockCardsUI(clockStyle);
+                applyClockStyle(clockStyle);
+            });
+        });
 
         updateClock();
         setInterval(updateClock, 10000);

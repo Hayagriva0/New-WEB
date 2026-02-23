@@ -356,6 +356,102 @@ body::before {
   line-height: 0.9;
   margin-bottom: 6px;
   font-variant-numeric: tabular-nums;
+  transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+/* Clock Styles */
+.clock-style-thin {
+  font-weight: 200;
+  letter-spacing: 6px;
+}
+
+.clock-style-bold {
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.clock-style-rounded {
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.1), 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.clock-style-condensed {
+  font-weight: 500;
+  letter-spacing: 1px;
+  transform: scaleX(0.85);
+}
+
+.clock-style-serif {
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 3px;
+}
+
+.clock-style-outline {
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--text-1);
+}
+
+.clock-style-neon {
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(100, 140, 255, 0.4),
+    0 0 20px rgba(100, 140, 255, 0.8),
+    0 0 40px rgba(168, 85, 247, 0.6);
+}
+
+/* Clock Setting Preview Cards */
+.clock-styles-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 4px 12px 4px;
+  margin: 0 -4px;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  /* IE and Edge */
+}
+
+.clock-styles-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.clock-style-card {
+  flex: 0 0 72px;
+  height: 48px;
+  border-radius: var(--r-md);
+  background: var(--bg-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--text-2);
+  cursor: pointer;
+  border: 2px solid transparent;
+  scroll-snap-align: center;
+  transition: all var(--ease);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.clock-style-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-1);
+  transform: translateY(-2px);
+}
+
+.clock-style-card.selected {
+  border-color: var(--accent);
+  color: var(--text-1);
+  background: rgba(100, 140, 255, 0.15);
+  box-shadow: 0 6px 16px rgba(100, 140, 255, 0.2);
 }
 
 .greeting {
