@@ -76,25 +76,14 @@ var Suggestions = (() => {
                     return data[1].slice(0, MAX_ITEMS);
                 }
 
-                /* Fallback to Bing Suggest */
-                console.log('[Suggestions] Google empty, trying Bing...');
-                var bingUrl = 'https://api.bing.com/osjson.aspx?query=' + encoded;
-                return corsAwareFetch(bingUrl);
-            })
-            .then(function (data) {
-                if (data && Array.isArray(data) && Array.isArray(data[1]) && data[1].length > 0) {
-                    console.log('[Suggestions] Bing returned', data[1].length, 'results');
-                    return data[1].slice(0, MAX_ITEMS);
-                }
-
                 /* Fallback to DuckDuckGo */
-                console.log('[Suggestions] Bing empty, trying DuckDuckGo...');
+                console.log('[Suggestions] Google empty, trying DuckDuckGo...');
                 var ddgUrl = 'https://duckduckgo.com/ac/?q=' + encoded;
                 return corsAwareFetch(ddgUrl);
             })
             .then(function (data) {
                 if (!data) return [];
-                /* If it's already an array of strings (from Google/Bing success), return it */
+                /* If it's already an array of strings (from Google success), return it */
                 if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'string') {
                     return data;
                 }

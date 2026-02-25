@@ -10,7 +10,6 @@
 const Storage = (() => {
 
   const DEFAULTS = {
-    theme: 'dark',
     searchEngine: 'duckduckgo',
     weatherEnabled: false,
     weatherLat: null,
