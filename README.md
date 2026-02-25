@@ -1,14 +1,13 @@
 <div align="center">
-  <img src="icons/icon-128.png" alt="New WEB Logo" width="128" height="128" />
+  <img src="assets/logo.png" alt="Duck.ai Logo" width="128" height="128" />
 
   # New WEB
 
   **A premium, privacy-focused new tab experience with search, AI mode, weather, and favourite sites.**
 
   [![Chrome Web Store](https://img.shields.io/badge/Chrome-Available-blue?logo=googlechrome&logoColor=white)](#)
-  [![Microsoft Edge Add-ons](https://img.shields.io/badge/Edge-Available-blue?logo=microsoftedge&logoColor=white)](#)
+  [![Microsoft Edge Add-ons](https://img.shields.io/badge/Edge-Available-blue?logo=microsoftedge&logoColor=white)](https://microsoftedge.microsoft.com/addons/detail/cdgkeoiilacohpjkdakhpelhenaajeia)
 
-  *(Links will be updated once published to the stores)*
 </div>
 
 ---
@@ -23,10 +22,15 @@
 
 ## 🖼️ Screenshots
 
-<!-- slideshow_start -->
-> **Screenshots coming soon!**  
-> *Please provide the images so we can display them perfectly here.*
-<!-- slideshow_end -->
+<div align="center">
+  <img src="assets/screenshot1.png" alt="Home Screen" width="800" />
+  <br/><br/>
+  <img src="assets/screenshot2.png" alt="Settings Screen" width="800" />
+  <br/><br/>
+  <img src="assets/screenshot3.png" alt="Search Screen" width="800" />
+  <br/><br/>
+  <img src="assets/screenshot4.png" alt="Code Snippet View" width="800" />
+</div>
 
 ## 🚀 Installation
 
@@ -45,7 +49,7 @@
 3. Enable **Developer mode**.
 4. Click **Load unpacked** and select the directory containing the extension files.
 
-## 💡 Usage
+## Usage
 
 Once installed, simply open a new tab (`Ctrl+T` or `Cmd+T`)! 
 You will immediately land on your **New WEB** experience, ready to browse quickly, efficiently, and stylishly.
