@@ -19,11 +19,11 @@ document.addEventListener('DOMContentLoaded', function () {
     var toggleSearch = document.getElementById('toggle-search');
     var toggleAI = document.getElementById('toggle-ai');
     var toggleHighlight = document.getElementById('toggle-highlight');
-    var themeBtns = document.querySelectorAll('.theme-btn');
+    var themeSwatches = document.querySelectorAll('.theme-swatch');
     var settingsBtn = document.getElementById('settings-btn');
     var settingsPanel = document.getElementById('settings-panel');
     var closeSettingsBtn = document.getElementById('close-settings-btn');
-    var engineSelect = document.getElementById('search-engine-select');
+    var engineBtns = document.querySelectorAll('.engine-btn');
     var weatherToggle = document.getElementById('weather-toggle');
     var clockStyleCards = document.querySelectorAll('.clock-style-card');
     var clockFormatToggle = document.getElementById('clock-format-toggle');
@@ -258,13 +258,31 @@ document.addEventListener('DOMContentLoaded', function () {
      * FEATURE 6: Search Engine Selection
      * ------------------------------------------------------- */
     try {
+        function updateEngineUI(activeEngine) {
+            engineBtns.forEach(function (btn) {
+                if (btn.dataset.engineValue === activeEngine) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
         Storage.get('searchEngine').then(function (val) {
-            if (val) { searchEngine = val; engineSelect.value = val; }
+            if (val) {
+                searchEngine = val;
+                updateEngineUI(val);
+            }
         }).catch(function () { });
-        engineSelect.addEventListener('change', function () {
-            searchEngine = engineSelect.value;
-            Storage.set('searchEngine', searchEngine).catch(function () { });
+
+        engineBtns.forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                searchEngine = e.currentTarget.dataset.engineValue;
+                updateEngineUI(searchEngine);
+                Storage.set('searchEngine', searchEngine).catch(function () { });
+            });
         });
+
         console.log('[New WEB] Engine select initialized');
     } catch (err) {
         console.error('[New WEB] Engine select init failed:', err);
@@ -439,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             Storage.set('theme', themeValue).catch(function () { });
 
-            themeBtns.forEach(function (btn) {
+            themeSwatches.forEach(function (btn) {
                 if (btn.dataset.themeValue === themeValue) {
                     btn.classList.add('active');
                 } else {
@@ -461,7 +479,7 @@ document.addEventListener('DOMContentLoaded', function () {
             applyTheme('system');
         });
 
-        themeBtns.forEach(function (btn) {
+        themeSwatches.forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 var newTheme = e.currentTarget.dataset.themeValue;
                 applyTheme(newTheme);

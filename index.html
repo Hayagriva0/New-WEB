@@ -30,7 +30,8 @@
   <!-- ===== TOP BAR ===== -->
   <div class="top-bar">
     <!-- Weather Widget (left) -->
-    <div id="weather-widget" class="weather-widget" style="display:none;">
+    <div id="weather-widget" class="weather-widget" style="display:none;"
+      onclick="window.location.href='https://weather.abhrajit.in/'">
       <span id="weather-icon" class="weather-emoji"></span>
       <div class="weather-details">
         <div class="weather-main">
@@ -62,48 +63,41 @@
     <h3 class="settings-title">Settings</h3>
 
     <div class="settings-group">
-      <label class="settings-label" for="search-engine-select">Search Engine</label>
-      <select id="search-engine-select" class="settings-select" title="Select search engine">
-        <option value="duckduckgo">DuckDuckGo</option>
-        <option value="google">Google</option>
-        <option value="brave">Brave</option>
-      </select>
+      <label class="settings-label">Search Engine</label>
+      <div class="engine-selector">
+        <button class="engine-btn active" data-engine-value="duckduckgo" aria-label="DuckDuckGo">DuckDuckGo</button>
+        <button class="engine-btn" data-engine-value="google" aria-label="Google">Google</button>
+        <button class="engine-btn" data-engine-value="bing" aria-label="Bing">Bing</button>
+        <button class="engine-btn" data-engine-value="brave" aria-label="Brave">Brave</button>
+      </div>
     </div>
 
     <div class="settings-group">
       <label class="settings-label">Appearance</label>
-      <div class="theme-selector">
-        <button class="theme-btn active" data-theme-value="system" aria-label="System Theme">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-            <line x1="8" y1="21" x2="16" y2="21"></line>
-            <line x1="12" y1="17" x2="12" y2="21"></line>
-          </svg>
-          System
-        </button>
-        <button class="theme-btn" data-theme-value="dark" aria-label="Dark Theme">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-          Dark
-        </button>
-        <button class="theme-btn" data-theme-value="light" aria-label="Light Theme">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-          Light
-        </button>
+      <div class="theme-swatch-picker">
+        <!-- Default / System -->
+        <button class="theme-swatch swatch-system" data-theme-value="system" aria-label="System Theme"
+          title="System"></button>
+        <!-- Dark -->
+        <button class="theme-swatch swatch-dark" data-theme-value="dark" aria-label="Dark Theme" title="Dark"></button>
+        <!-- Light -->
+        <button class="theme-swatch swatch-light" data-theme-value="light" aria-label="Light Theme"
+          title="Light"></button>
+        <!-- Midnight -->
+        <button class="theme-swatch swatch-midnight" data-theme-value="midnight" aria-label="Midnight Theme"
+          title="Midnight"></button>
+        <!-- Ocean -->
+        <button class="theme-swatch swatch-ocean" data-theme-value="ocean" aria-label="Ocean Theme"
+          title="Ocean"></button>
+        <!-- Forest -->
+        <button class="theme-swatch swatch-forest" data-theme-value="forest" aria-label="Forest Theme"
+          title="Forest"></button>
+        <!-- Crimson -->
+        <button class="theme-swatch swatch-crimson" data-theme-value="crimson" aria-label="Crimson Theme"
+          title="Crimson"></button>
+        <!-- Lavender -->
+        <button class="theme-swatch swatch-lavender" data-theme-value="lavender" aria-label="Lavender Theme"
+          title="Lavender"></button>
       </div>
     </div>
 
