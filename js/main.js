@@ -15,9 +15,11 @@ document.addEventListener('DOMContentLoaded', function () {
      * ------------------------------------------------------- */
     var searchInput = document.getElementById('search-input');
     var searchBtn = document.getElementById('search-btn');
+    var searchClearBtn = document.getElementById('search-clear-btn');
     var toggleSearch = document.getElementById('toggle-search');
     var toggleAI = document.getElementById('toggle-ai');
     var toggleHighlight = document.getElementById('toggle-highlight');
+    var themeBtns = document.querySelectorAll('.theme-btn');
     var settingsBtn = document.getElementById('settings-btn');
     var settingsPanel = document.getElementById('settings-panel');
     var closeSettingsBtn = document.getElementById('close-settings-btn');
@@ -182,6 +184,24 @@ document.addEventListener('DOMContentLoaded', function () {
         searchInput.addEventListener('keydown', function (e) {
             if (e.key === 'Enter') setTimeout(doSearch, 30);
         });
+
+        searchInput.addEventListener('input', function () {
+            if (searchInput.value.length > 0) {
+                searchClearBtn.style.display = 'flex';
+            } else {
+                searchClearBtn.style.display = 'none';
+            }
+        });
+
+        if (searchClearBtn) {
+            searchClearBtn.addEventListener('click', function () {
+                searchInput.value = '';
+                searchClearBtn.style.display = 'none';
+                searchInput.focus();
+                try { Suggestions.hide(); } catch (e) { }
+            });
+        }
+
         searchBtn.addEventListener('click', function () { doSearch(); });
         console.log('[New WEB] Search initialized');
     } catch (err) {
@@ -404,6 +424,64 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('[New WEB] Ambient Orb Parallax initialized');
     } catch (err) {
         console.error('[New WEB] Ambient Orb Parallax init failed:', err);
+    }
+
+    /* -------------------------------------------------------
+     * FEATURE 12: Theme Toggle
+     * ------------------------------------------------------- */
+    try {
+        function applyTheme(themeValue) {
+            if (themeValue === 'system') {
+                var isSystemLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+                document.documentElement.setAttribute('data-theme', isSystemLight ? 'light' : 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', themeValue);
+            }
+            Storage.set('theme', themeValue).catch(function () { });
+
+            themeBtns.forEach(function (btn) {
+                if (btn.dataset.themeValue === themeValue) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        Storage.get('theme').then(function (val) {
+            var activeTheme = val || 'system';
+
+            // Handle edge case where old db might have stored boolean or other values
+            if (activeTheme !== 'light' && activeTheme !== 'dark' && activeTheme !== 'system') {
+                activeTheme = activeTheme === true ? 'light' : 'dark';
+            }
+
+            applyTheme(activeTheme);
+        }).catch(function () {
+            applyTheme('system');
+        });
+
+        themeBtns.forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                var newTheme = e.currentTarget.dataset.themeValue;
+                applyTheme(newTheme);
+            });
+        });
+
+        // Listen for system theme changes if set to system
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function (e) {
+                Storage.get('theme').then(function (val) {
+                    if (val === 'system' || !val) {
+                        document.documentElement.setAttribute('data-theme', e.matches ? 'light' : 'dark');
+                    }
+                }).catch(function () { });
+            });
+        }
+
+        console.log('[New WEB] Theme toggle initialized');
+    } catch (err) {
+        console.error('[New WEB] Theme toggle init failed:', err);
     }
 
     console.log('[New WEB] All features initialized ✓');

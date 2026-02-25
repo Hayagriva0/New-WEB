@@ -32,6 +32,36 @@
   --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
 }
 
+[data-theme="light"] {
+  --bg: #f5f5f7;
+  --bg-elevated: rgba(255, 255, 255, 0.65);
+  --bg-hover: rgba(255, 255, 255, 0.9);
+  --bg-glass: rgba(255, 255, 255, 0.4);
+  --border: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(0, 0, 0, 0.15);
+  --border-focus: rgba(0, 102, 204, 0.45);
+  --glow: rgba(0, 0, 0, 0.05);
+  --glow-strong: rgba(0, 0, 0, 0.12);
+  --text-1: #1d1d1f;
+  --text-2: rgba(0, 0, 0, 0.65);
+  --text-3: rgba(0, 0, 0, 0.4);
+  --text-4: rgba(0, 0, 0, 0.15);
+  --accent: #0066cc;
+  --accent-light: #007aff;
+}
+
+[data-theme="light"] body::before {
+  background: radial-gradient(ellipse, rgba(0, 102, 204, 0.15) 0%, rgba(168, 85, 247, 0.08) 40%, transparent 65%);
+}
+
+[data-theme="light"] .logo {
+  filter: drop-shadow(0 0 20px rgba(0, 102, 204, 0.2)) saturate(1.8) brightness(0.6) contrast(1.2);
+}
+
+[data-theme="light"] .logo:hover {
+  filter: drop-shadow(0 0 32px rgba(0, 102, 204, 0.4)) saturate(1.8) brightness(0.6) contrast(1.2);
+}
+
 *,
 *::before,
 *::after {
@@ -268,6 +298,49 @@ body::before {
   font-size: 13px;
   color: var(--text-2);
 }
+
+/* Theme Selector segmented control */
+.theme-selector {
+  display: flex;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 4px;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.theme-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-3);
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--ease);
+}
+
+.theme-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-2);
+}
+
+.theme-btn.active {
+  background: var(--bg-glass);
+  color: var(--text-1);
+  border-color: var(--border-focus);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 
 .toggle-switch {
   position: relative;
@@ -593,7 +666,7 @@ body::before {
 
 .search-input {
   width: 100%;
-  padding: 16px 56px 16px 24px;
+  padding: 16px 88px 16px 24px;
   background: var(--bg-elevated);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -615,8 +688,36 @@ body::before {
 
 .search-input:focus {
   border-color: var(--border-focus);
-  box-shadow: 0 0 0 3px var(--glow starken), 0 12px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 3px var(--glow-strong), 0 12px 40px rgba(0, 0, 0, 0.3);
   transform: scale(1.02);
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: all var(--ease);
+}
+
+.search-clear-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-1);
+}
+
+[data-theme="light"] .search-clear-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-1);
 }
 
 .search-icon-btn {
@@ -659,6 +760,11 @@ body::before {
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
   max-height: 320px;
   overflow-y: auto;
+}
+
+[data-theme="light"] .suggestions-dropdown {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
 }
 
 .suggestion-item {
