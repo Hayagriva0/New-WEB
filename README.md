@@ -1,5 +1,51 @@
-# New-WEB
-A privacy-focused, premium Chrome Extension (Manifest V3) that replaces the new tab page with a minimal dark UI featuring search/AI toggle, weather widget, and top sites.
+<div align="center">
+  <img src="icons/icon-128.png" alt="New WEB Logo" width="128" height="128" />
 
+  # New WEB
 
-![Screenshot_23-2-2026_131244_127 0 0 1](https://github.com/user-attachments/assets/e7a7320b-3d32-4171-bc16-346f353dbf7c)
+  **A premium, privacy-focused new tab experience with search, AI mode, weather, and favourite sites.**
+
+  [![Chrome Web Store](https://img.shields.io/badge/Chrome-Available-blue?logo=googlechrome&logoColor=white)](#)
+  [![Microsoft Edge Add-ons](https://img.shields.io/badge/Edge-Available-blue?logo=microsoftedge&logoColor=white)](#)
+
+  *(Links will be updated once published to the stores)*
+</div>
+
+---
+
+## ✨ Features
+
+- 🔒 **Privacy-focused Search**: Quick access to DuckDuckGo and Google search suggestions.
+- 🤖 **AI Mode**: Seamless integration for AI-assisted queries right from your new tab.
+- ⛅ **Weather Widget**: Real-time accurate weather updates using your local area.
+- 🔖 **Favourite Sites**: Easy and quick access to your most visited and curated websites.
+- 🎨 **Premium Aesthetic**: A beautifully crafted, modern, and clean interface that feels native and refined.
+
+## 🖼️ Screenshots
+
+<!-- slideshow_start -->
+> **Screenshots coming soon!**  
+> *Please provide the images so we can display them perfectly here.*
+<!-- slideshow_end -->
+
+## 🚀 Installation
+
+### Using the Chrome Web Store / Edge Add-ons
+*(Coming soon)*
+
+### Developer Mode (Local Installation)
+
+1. **Clone or download** this repository to your computer:
+   ```bash
+   git clone https://github.com/yourusername/New-WEB-main.git
+   ```
+2. Open your browser's extensions page:
+   - **Chrome**: Navigate to `chrome://extensions/`
+   - **Edge**: Navigate to `edge://extensions/`
+3. Enable **Developer mode**.
+4. Click **Load unpacked** and select the directory containing the extension files.
+
+## 💡 Usage
+
+Once installed, simply open a new tab (`Ctrl+T` or `Cmd+T`)! 
+You will immediately land on your **New WEB** experience, ready to browse quickly, efficiently, and stylishly.
