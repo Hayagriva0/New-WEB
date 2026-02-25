@@ -27,9 +27,9 @@
   <br/><br/>
   <img src="assets/screenshot2.png" alt="Settings Screen" width="800" />
   <br/><br/>
-  <img src="assets/screenshot3.png" alt="Search Screen" width="800" />
+  <img src="assets/screenshot3.jpg" alt="Search Screen" width="800" />
   <br/><br/>
-  <img src="assets/screenshot4.png" alt="Code Snippet View" width="800" />
+  <img src="assets/screenshot4.jpg" alt="Code Snippet View" width="800" />
 </div>
 
 ## 🚀 Installation
