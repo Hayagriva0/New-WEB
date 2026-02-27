@@ -9,6 +9,7 @@
 var Favourites = (() => {
 
     var MAX_FAVOURITES = 12;
+    var MAX_NAME_LENGTH = 24;
     var favourites = [];
     var gridEl = null;
     var modalEl = null;
@@ -25,6 +26,42 @@ var Favourites = (() => {
         { name: 'LinkedIn', url: 'https://www.linkedin.com' },
         { name: 'NotebookLM', url: 'https://notebooklm.google.com' }
     ];
+
+    /**
+     * Sanitize a user-provided name: trim, limit length, strip control chars.
+     */
+    function sanitizeName(name) {
+        var s = (name || '').trim();
+        /* Remove control characters (U+0000–U+001F, U+007F) */
+        s = s.replace(/[\x00-\x1F\x7F]/g, '');
+        return s.substring(0, MAX_NAME_LENGTH);
+    }
+
+    /**
+     * Validate and sanitize a user-provided URL.
+     * Returns the sanitized URL string, or null if invalid.
+     */
+    function sanitizeUrl(url) {
+        var u = (url || '').trim();
+        if (!u) return null;
+
+        /* Add protocol if missing */
+        if (u.indexOf('http://') !== 0 && u.indexOf('https://') !== 0) {
+            u = 'https://' + u;
+        }
+
+        /* Validate with URL constructor */
+        try {
+            var parsed = new URL(u);
+            /* Only allow http and https protocols */
+            if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+                return null;
+            }
+            return parsed.href;
+        } catch (e) {
+            return null;
+        }
+    }
 
     async function load() {
         try {
@@ -53,18 +90,10 @@ var Favourites = (() => {
     }
 
     function add(name, url) {
-        var n = (name || '').trim();
-        var u = (url || '').trim();
+        var n = sanitizeName(name);
+        var u = sanitizeUrl(url);
         if (!n || !u) return false;
         if (favourites.length >= MAX_FAVOURITES) return false;
-
-        /* Add protocol if missing */
-        if (u.indexOf('http://') !== 0 && u.indexOf('https://') !== 0) {
-            u = 'https://' + u;
-        }
-
-        /* Validate URL */
-        try { new URL(u); } catch (e) { return false; }
 
         /* Check duplicates */
         for (var i = 0; i < favourites.length; i++) {
@@ -77,17 +106,16 @@ var Favourites = (() => {
     }
 
     function remove(index) {
-        if (index >= 0 && index < favourites.length) {
-            favourites.splice(index, 1);
-            save();
-            render();
-        }
+        if (typeof index !== 'number' || index < 0 || index >= favourites.length) return;
+        favourites.splice(index, 1);
+        save();
+        render();
     }
 
     function getFaviconUrl(siteUrl) {
         try {
             var urlObj = new URL(siteUrl);
-            /* Try Chrome's internal favicon API first */
+            /* Use Chrome's internal favicon API (only available in extension context) */
             if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id) {
                 return 'chrome-extension://' + chrome.runtime.id +
                     '/_favicon/?pageUrl=' + encodeURIComponent(urlObj.href) + '&size=32';
@@ -101,7 +129,11 @@ var Favourites = (() => {
 
     function render() {
         if (!gridEl) return;
-        gridEl.innerHTML = '';
+
+        /* Clear grid safely (no innerHTML) */
+        while (gridEl.firstChild) {
+            gridEl.removeChild(gridEl.firstChild);
+        }
 
         if (favourites.length === 0) return;
 
@@ -111,17 +143,29 @@ var Favourites = (() => {
                 card.href = fav.url;
                 card.className = 'site-card';
                 card.title = fav.name;
+                card.setAttribute('rel', 'noopener noreferrer');
 
-                var img = document.createElement('img');
-                img.className = 'site-favicon';
-                img.alt = '';
-                img.src = getFaviconUrl(fav.url);
-                img.addEventListener('error', function () {
+                var faviconSrc = getFaviconUrl(fav.url);
+
+                if (faviconSrc) {
+                    var img = document.createElement('img');
+                    img.className = 'site-favicon';
+                    img.alt = '';
+                    img.src = faviconSrc;
+                    img.addEventListener('error', function () {
+                        var fb = document.createElement('div');
+                        fb.className = 'site-favicon-fallback';
+                        fb.textContent = (fav.name || '?')[0].toUpperCase();
+                        img.replaceWith(fb);
+                    });
+                    card.appendChild(img);
+                } else {
+                    /* Letter fallback when no favicon API available */
                     var fb = document.createElement('div');
                     fb.className = 'site-favicon-fallback';
                     fb.textContent = (fav.name || '?')[0].toUpperCase();
-                    img.replaceWith(fb);
-                });
+                    card.appendChild(fb);
+                }
 
                 var label = document.createElement('span');
                 label.className = 'site-label';
@@ -130,14 +174,13 @@ var Favourites = (() => {
                 var removeBtn = document.createElement('button');
                 removeBtn.className = 'site-remove-btn';
                 removeBtn.title = 'Remove';
-                removeBtn.innerHTML = '&times;';
+                removeBtn.textContent = '\u00D7'; /* × character */
                 removeBtn.addEventListener('click', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
                     remove(idx);
                 });
 
-                card.appendChild(img);
                 card.appendChild(label);
                 card.appendChild(removeBtn);
                 gridEl.appendChild(card);

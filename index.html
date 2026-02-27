@@ -10,18 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script>
-    try {
-      var savedTheme = localStorage.getItem('newweb_theme');
-      if (savedTheme === '"light"' || savedTheme === '"dark"') {
-        document.documentElement.setAttribute('data-theme', savedTheme.replace(/"/g, ''));
-      } else if (savedTheme === '"system"' || !savedTheme) {
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-          document.documentElement.setAttribute('data-theme', 'light');
-        }
-      }
-    } catch (e) { }
-  </script>
+  <script src="js/theme-init.js"></script>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 
@@ -30,8 +19,7 @@
   <!-- ===== TOP BAR ===== -->
   <div class="top-bar">
     <!-- Weather Widget (left) -->
-    <div id="weather-widget" class="weather-widget" style="display:none;"
-      onclick="window.location.href='https://weather.abhrajit.in/'">
+    <div id="weather-widget" class="weather-widget hidden">
       <span id="weather-icon" class="weather-emoji"></span>
       <div class="weather-details">
         <div class="weather-main">
@@ -58,106 +46,339 @@
     </button>
   </div>
 
-  <!-- ===== SETTINGS PANEL ===== -->
-  <div id="settings-panel" class="settings-panel">
-    <h3 class="settings-title">Settings</h3>
+  <!-- ===== SETTINGS MODAL ===== -->
+  <div id="settings-backdrop" class="settings-backdrop"></div>
+  <div id="settings-modal" class="settings-modal">
 
-    <div class="settings-group">
-      <label class="settings-label">Search Engine</label>
-      <div class="engine-selector">
-        <button class="engine-btn active" data-engine-value="duckduckgo" aria-label="DuckDuckGo">DuckDuckGo</button>
-        <button class="engine-btn" data-engine-value="google" aria-label="Google">Google</button>
-        <button class="engine-btn" data-engine-value="bing" aria-label="Bing">Bing</button>
-        <button class="engine-btn" data-engine-value="brave" aria-label="Brave">Brave</button>
-      </div>
+    <!-- Sidebar -->
+    <div class="settings-sidebar">
+      <h3 class="settings-title">Settings</h3>
+      <nav class="settings-nav">
+        <button class="settings-tab-btn active" data-tab="general">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z">
+            </path>
+          </svg>
+          General
+        </button>
+        <button class="settings-tab-btn" data-tab="appearance">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          Appearance
+        </button>
+        <button class="settings-tab-btn" data-tab="dashboard">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          Dashboard
+        </button>
+      </nav>
+      <div class="settings-sidebar-spacer"></div>
+      <button id="close-settings-btn" class="settings-close-btn">Done</button>
     </div>
 
-    <div class="settings-group">
-      <label class="settings-label">Appearance</label>
-      <div class="theme-swatch-picker">
-        <!-- Default / System -->
-        <button class="theme-swatch swatch-system" data-theme-value="system" aria-label="System Theme"
-          title="System"></button>
-        <!-- Dark -->
-        <button class="theme-swatch swatch-dark" data-theme-value="dark" aria-label="Dark Theme" title="Dark"></button>
-        <!-- Light -->
-        <button class="theme-swatch swatch-light" data-theme-value="light" aria-label="Light Theme"
-          title="Light"></button>
-        <!-- Midnight -->
-        <button class="theme-swatch swatch-midnight" data-theme-value="midnight" aria-label="Midnight Theme"
-          title="Midnight"></button>
-        <!-- Ocean -->
-        <button class="theme-swatch swatch-ocean" data-theme-value="ocean" aria-label="Ocean Theme"
-          title="Ocean"></button>
-        <!-- Forest -->
-        <button class="theme-swatch swatch-forest" data-theme-value="forest" aria-label="Forest Theme"
-          title="Forest"></button>
-        <!-- Crimson -->
-        <button class="theme-swatch swatch-crimson" data-theme-value="crimson" aria-label="Crimson Theme"
-          title="Crimson"></button>
-        <!-- Lavender -->
-        <button class="theme-swatch swatch-lavender" data-theme-value="lavender" aria-label="Lavender Theme"
-          title="Lavender"></button>
-      </div>
-    </div>
+    <!-- Main Content Area -->
+    <div class="settings-content">
 
-    <div class="settings-group">
-      <label class="settings-label">Weather</label>
-      <div class="settings-toggle-row">
-        <span>Enable Weather</span>
-        <label class="toggle-switch">
-          <input type="checkbox" id="weather-toggle" title="Toggle weather">
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-      <p class="settings-hint">Uses your location. No API key needed.</p>
-    </div>
+      <!-- GENERAL TAB -->
+      <div class="settings-tab-pane active" id="tab-general">
+        <h2 class="settings-pane-title">General</h2>
 
-    <div class="settings-group">
-      <label class="settings-label">Clock Style</label>
-      <div class="clock-styles-scroll" id="clock-styles-container">
-        <button class="clock-style-card clock-style-default" data-style="default" aria-label="Default">09:41</button>
-        <button class="clock-style-card clock-style-thin" data-style="thin" aria-label="Thin">09:41</button>
-        <button class="clock-style-card clock-style-bold" data-style="bold" aria-label="Bold">09:41</button>
-        <button class="clock-style-card clock-style-rounded" data-style="rounded" aria-label="Rounded">09:41</button>
-        <button class="clock-style-card clock-style-condensed" data-style="condensed"
-          aria-label="Condensed">09:41</button>
-        <button class="clock-style-card clock-style-serif" data-style="serif" aria-label="Serif">09:41</button>
-        <button class="clock-style-card clock-style-outline" data-style="outline" aria-label="Outline">09:41</button>
-        <button class="clock-style-card clock-style-neon" data-style="neon" aria-label="Neon">09:41</button>
-      </div>
-    </div>
+        <div class="settings-group">
+          <label class="settings-label">Search Engine</label>
+          <p class="settings-group-hint">Select your preferred search provider</p>
+          <div class="settings-group-content">
+            <div class="engine-selector">
+              <button class="engine-btn active" data-engine-value="duckduckgo"
+                aria-label="DuckDuckGo">DuckDuckGo</button>
+              <button class="engine-btn" data-engine-value="google" aria-label="Google">Google</button>
+              <button class="engine-btn" data-engine-value="bing" aria-label="Bing">Bing</button>
+              <button class="engine-btn" data-engine-value="brave" aria-label="Brave">Brave</button>
+            </div>
+          </div>
+        </div>
 
-    <div class="settings-group">
-      <label class="settings-label">Clock Format</label>
-      <div class="settings-toggle-row">
-        <span>24-hour format</span>
-        <label class="toggle-switch">
-          <input type="checkbox" id="clock-format-toggle" title="Toggle 24h clock">
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-    </div>
+        <div class="settings-group">
+          <label class="settings-label">Weather</label>
+          <div class="settings-group-content box-group">
+            <div class="settings-toggle-row">
+              <div class="settings-row-info">
+                <span>Enable Weather</span>
+                <p class="settings-hint">Uses location via Open-Meteo. No API key needed.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="weather-toggle" title="Toggle weather">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
 
-    <div class="settings-group">
-      <label class="settings-label">Sections</label>
-      <div class="settings-toggle-row" style="margin-bottom: 8px;">
-        <span>Frequently Visited</span>
-        <label class="toggle-switch">
-          <input type="checkbox" id="top-sites-toggle" title="Toggle Frequently Visited">
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-      <div class="settings-toggle-row">
-        <span>Quick Notes</span>
-        <label class="toggle-switch">
-          <input type="checkbox" id="notes-toggle" title="Toggle Quick Notes">
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-    </div>
+        <div class="settings-group">
+          <label class="settings-label">Connect</label>
+          <div class="settings-group-content box-group">
+            <div class="settings-action-row">
+              <a href="mailto:hydra007@duck.com" class="settings-link-btn" title="Send Feedback">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+                Feedback
+              </a>
+              <a href="https://github.com/Hayagriva0" target="_blank" rel="noopener noreferrer"
+                class="settings-link-btn" title="View on GitHub">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path
+                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                </svg>
+                GitHub
+              </a>
+            </div>
+          </div>
+        </div>
 
-    <button id="close-settings-btn" class="settings-close-btn">Done</button>
+        <div class="settings-group">
+          <label class="settings-label">Data</label>
+          <div class="settings-group-content box-group">
+            <div class="settings-action-row">
+              <button id="reset-settings-btn" class="settings-link-btn text-danger"
+                title="Reset all settings to defaults">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="1 4 1 10 7 10"></polyline>
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                </svg>
+                Reset Settings
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-version">
+          <span>New WEB v3.0.0</span>
+          <span class="settings-version-sub">Privacy-focused new tab</span>
+        </div>
+      </div>
+
+      <!-- APPEARANCE TAB -->
+      <div class="settings-tab-pane hidden" id="tab-appearance">
+        <h2 class="settings-pane-title">Appearance</h2>
+
+        <div class="settings-group">
+          <label class="settings-label">Color Theme</label>
+          <p class="settings-group-hint">Choose your color palette</p>
+          <div class="settings-group-content">
+            <div class="theme-swatch-picker">
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-system" data-theme-value="system" aria-label="System"
+                  title="System"></button>
+                <span class="swatch-label">Auto</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-dark" data-theme-value="dark" aria-label="Dark"
+                  title="Dark"></button>
+                <span class="swatch-label">Dark</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-light" data-theme-value="light" aria-label="Light"
+                  title="Light"></button>
+                <span class="swatch-label">Light</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-midnight" data-theme-value="midnight" aria-label="Midnight"
+                  title="Midnight"></button>
+                <span class="swatch-label">Midnight</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-ocean" data-theme-value="ocean" aria-label="Ocean"
+                  title="Ocean"></button>
+                <span class="swatch-label">Ocean</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-forest" data-theme-value="forest" aria-label="Forest"
+                  title="Forest"></button>
+                <span class="swatch-label">Forest</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-crimson" data-theme-value="crimson" aria-label="Crimson"
+                  title="Crimson"></button>
+                <span class="swatch-label">Crimson</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-lavender" data-theme-value="lavender" aria-label="Lavender"
+                  title="Lavender"></button>
+                <span class="swatch-label">Lavender</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-rose" data-theme-value="rose" aria-label="Rose"
+                  title="Rose"></button>
+                <span class="swatch-label">Rosé</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-sunset" data-theme-value="sunset" aria-label="Sunset"
+                  title="Sunset"></button>
+                <span class="swatch-label">Sunset</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-arctic" data-theme-value="arctic" aria-label="Arctic"
+                  title="Arctic"></button>
+                <span class="swatch-label">Arctic</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label">Wallpaper</label>
+          <p class="settings-group-hint">Set a custom background image</p>
+          <div class="settings-group-content box-group">
+            <div class="wallpaper-controls">
+              <label for="wallpaper-upload" class="settings-link-btn flex-center">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                Upload Image
+              </label>
+              <input type="file" id="wallpaper-upload" accept="image/*" class="hidden">
+              <button id="wallpaper-remove" class="settings-link-btn text-danger hidden" title="Remove wallpaper">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label">Clock Font</label>
+          <p class="settings-group-hint">Pick a style for the clock display</p>
+          <div class="settings-group-content">
+            <div class="clock-styles-scroll" id="clock-styles-container">
+              <button class="clock-style-card clock-style-default" data-style="default"
+                aria-label="System">12:34</button>
+              <button class="clock-style-card clock-style-thin" data-style="thin" aria-label="Light">12:34</button>
+              <button class="clock-style-card clock-style-bold" data-style="bold" aria-label="Heavy">12:34</button>
+              <button class="clock-style-card clock-style-rounded" data-style="rounded"
+                aria-label="Rounded">12:34</button>
+              <button class="clock-style-card clock-style-condensed" data-style="condensed"
+                aria-label="Narrow">12:34</button>
+              <button class="clock-style-card clock-style-serif" data-style="serif" aria-label="Classic">12:34</button>
+              <button class="clock-style-card clock-style-digital" data-style="digital"
+                aria-label="Digital">12:34</button>
+              <button class="clock-style-card clock-style-script" data-style="script"
+                aria-label="Elegant">12:34</button>
+              <button class="clock-style-card clock-style-outline" data-style="outline"
+                aria-label="Outline">12:34</button>
+              <button class="clock-style-card clock-style-neon" data-style="neon" aria-label="Neon">12:34</button>
+              <button class="clock-style-card clock-style-retro" data-style="retro" aria-label="Retro">12:34</button>
+              <button class="clock-style-card clock-style-bubble" data-style="bubble" aria-label="Bubble">12:34</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DASHBOARD TAB -->
+      <div class="settings-tab-pane hidden" id="tab-dashboard">
+        <h2 class="settings-pane-title">Dashboard</h2>
+
+        <div class="settings-group">
+          <label class="settings-label">Module Visibility</label>
+          <p class="settings-group-hint">Show or hide sections on your new tab</p>
+          <div class="settings-group-content box-group">
+            <div class="settings-toggle-row">
+              <span>Clock</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="clock-toggle" title="Toggle Clock" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-row">
+              <span>24-Hour Clock</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="clock-format-toggle" title="Toggle 24h clock">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-row">
+              <span>Greeting</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="greeting-toggle" title="Toggle Greeting" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-row">
+              <span>Date</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="date-toggle" title="Toggle Date" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-row">
+              <span>Center Logo</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="logo-toggle" title="Toggle Logo" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-row">
+              <span>Favourites</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="favourites-toggle" title="Toggle Favourites" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-row">
+              <span>Frequently Visited</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="top-sites-toggle" title="Toggle Frequently Visited" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-row">
+              <span>Quick Notes</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="notes-toggle" title="Toggle Quick Notes" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-row row-last">
+              <span>Usage Insight</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="usage-toggle" title="Toggle Usage Insight" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
   </div>
 
   <!-- ===== MAIN CONTENT ===== -->
@@ -171,7 +392,7 @@
     </div>
 
     <!-- Logo -->
-    <div class="logo-container fade-in">
+    <div class="logo-container fade-in" id="main-logo-container">
       <img src="icons/icon.svg" alt="New WEB" class="logo" width="76" height="76">
     </div>
 
@@ -263,6 +484,9 @@
         </form>
       </div>
     </section>
+
+    <!-- Daily Usage Insight -->
+    <div id="usage-insight" class="usage-insight fade-in-delay"></div>
   </main>
 
   <!-- ===== ADD FAVOURITE MODAL ===== -->
@@ -287,6 +511,7 @@
   <script src="js/suggestions.js"></script>
   <script src="js/favourites.js"></script>
   <script src="js/notes.js"></script>
+  <script src="js/usage.js"></script>
   <script src="js/main.js"></script>
 </body>
 

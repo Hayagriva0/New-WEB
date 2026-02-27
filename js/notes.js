@@ -6,6 +6,8 @@
 
 const NotesModule = (() => {
     const DEFAULT_NOTES = [];
+    const MAX_NOTE_LENGTH = 500;
+    const MAX_NOTES = 100;
     let notes = [];
 
     let notesListEl;
@@ -23,7 +25,11 @@ const NotesModule = (() => {
             const val = await Storage.get('user_notes');
             if (val && Array.isArray(val)) {
                 // Upgrade legacy string notes to objects if necessary
-                notes = val.map(n => typeof n === 'string' ? { id: Date.now() + Math.random(), text: n, done: false } : n);
+                notes = val.map(function (n) {
+                    return typeof n === 'string'
+                        ? { id: Date.now() + Math.random(), text: n, done: false }
+                        : n;
+                });
             } else {
                 notes = DEFAULT_NOTES;
             }
@@ -33,14 +39,59 @@ const NotesModule = (() => {
 
         renderNotes();
 
-        addNoteForm.addEventListener('submit', (e) => {
+        addNoteForm.addEventListener('submit', function (e) {
             e.preventDefault();
             addNote();
         });
     };
 
+    /**
+     * Create the close/delete SVG icon using DOM APIs (no innerHTML).
+     */
+    function createDeleteIcon() {
+        var svgNS = 'http://www.w3.org/2000/svg';
+        var svg = document.createElementNS(svgNS, 'svg');
+        svg.setAttribute('width', '14');
+        svg.setAttribute('height', '14');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        svg.setAttribute('stroke-width', '2');
+        svg.setAttribute('stroke-linecap', 'round');
+        svg.setAttribute('stroke-linejoin', 'round');
+
+        var line1 = document.createElementNS(svgNS, 'line');
+        line1.setAttribute('x1', '18');
+        line1.setAttribute('y1', '6');
+        line1.setAttribute('x2', '6');
+        line1.setAttribute('y2', '18');
+
+        var line2 = document.createElementNS(svgNS, 'line');
+        line2.setAttribute('x1', '6');
+        line2.setAttribute('y1', '6');
+        line2.setAttribute('x2', '18');
+        line2.setAttribute('y2', '18');
+
+        svg.appendChild(line1);
+        svg.appendChild(line2);
+        return svg;
+    }
+
+    /**
+     * Sanitize user note text: trim and remove control characters.
+     */
+    function sanitizeNoteText(text) {
+        var s = (text || '').trim();
+        /* Remove control characters (U+0000–U+001F, U+007F) except common whitespace */
+        s = s.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+        return s.substring(0, MAX_NOTE_LENGTH);
+    }
+
     const renderNotes = () => {
-        notesListEl.innerHTML = '';
+        /* Clear list safely (no innerHTML) */
+        while (notesListEl.firstChild) {
+            notesListEl.removeChild(notesListEl.firstChild);
+        }
 
         if (notes.length === 0) {
             const emptyMsg = document.createElement('div');
@@ -53,7 +104,7 @@ const NotesModule = (() => {
             return;
         }
 
-        notes.forEach((note, index) => {
+        notes.forEach(function (note, index) {
             const noteEl = document.createElement('div');
             noteEl.className = 'note-item fade-in' + (note.done ? ' note-done' : '');
 
@@ -63,7 +114,9 @@ const NotesModule = (() => {
             checkbox.type = 'checkbox';
             checkbox.className = 'note-checkbox';
             checkbox.checked = note.done;
-            checkbox.onchange = () => toggleNoteDone(index);
+            checkbox.addEventListener('change', function () {
+                toggleNoteDone(index);
+            });
 
             const checkmark = document.createElement('span');
             checkmark.className = 'note-checkmark';
@@ -77,19 +130,18 @@ const NotesModule = (() => {
             const textEl = document.createElement('span');
             textEl.className = 'note-text';
             textEl.textContent = note.text;
-            textEl.onclick = () => startEdit(index, textWrapper, textEl, note.text);
+            textEl.addEventListener('click', function () {
+                startEdit(index, textWrapper, textEl, note.text);
+            });
 
             textWrapper.appendChild(textEl);
 
             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'note-delete-btn';
-            deleteBtn.innerHTML = `
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      `;
-            deleteBtn.onclick = () => removeNote(index);
+            deleteBtn.appendChild(createDeleteIcon());
+            deleteBtn.addEventListener('click', function () {
+                removeNote(index);
+            });
 
             noteEl.appendChild(checkboxWrapper);
             noteEl.appendChild(textWrapper);
@@ -111,7 +163,7 @@ const NotesModule = (() => {
         inputEl.focus();
 
         const saveEdit = () => {
-            const newText = inputEl.value.trim();
+            const newText = sanitizeNoteText(inputEl.value);
             if (newText) {
                 notes[index].text = newText;
                 Storage.set('user_notes', notes);
@@ -119,22 +171,24 @@ const NotesModule = (() => {
             renderNotes();
         };
 
-        inputEl.onblur = saveEdit;
-        inputEl.onkeydown = (e) => {
+        inputEl.addEventListener('blur', saveEdit);
+        inputEl.addEventListener('keydown', function (e) {
             if (e.key === 'Enter') saveEdit();
             if (e.key === 'Escape') renderNotes(); // Cancel edit
-        };
+        });
     };
 
     const toggleNoteDone = async (index) => {
+        if (typeof index !== 'number' || index < 0 || index >= notes.length) return;
         notes[index].done = !notes[index].done;
         await Storage.set('user_notes', notes);
         renderNotes();
     };
 
     const addNote = async () => {
-        const text = newNoteInput.value.trim();
+        const text = sanitizeNoteText(newNoteInput.value);
         if (!text) return;
+        if (notes.length >= MAX_NOTES) return;
 
         notes.push({ id: Date.now(), text: text, done: false });
         newNoteInput.value = '';
@@ -144,6 +198,7 @@ const NotesModule = (() => {
     };
 
     const removeNote = async (index) => {
+        if (typeof index !== 'number' || index < 0 || index >= notes.length) return;
         notes.splice(index, 1);
         await Storage.set('user_notes', notes);
         renderNotes();
@@ -151,6 +206,3 @@ const NotesModule = (() => {
 
     return { init };
 })();
-
-// Attach to global scope to allow UI interactions if needed
-window.NotesModule = NotesModule;

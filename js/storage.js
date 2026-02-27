@@ -17,6 +17,7 @@ const Storage = (() => {
     weatherLon: null,
     weatherCity: '',
     notesEnabled: false,
+    usageEnabled: true,
     topSitesEnabled: true,
     favourites: [
       { name: 'YouTube', url: 'https://www.youtube.com' },
@@ -145,5 +146,34 @@ const Storage = (() => {
     return filled;
   }
 
-  return { get, set, getMultiple, DEFAULTS };
+  /**
+   * Clear all stored data.
+   */
+  async function clear() {
+    try {
+      if (hasChromeStorage) {
+        return new Promise((resolve) => {
+          chrome.storage.local.clear(() => {
+            if (chrome.runtime.lastError) {
+              console.warn('Storage clear error:', chrome.runtime.lastError);
+            }
+            resolve();
+          });
+        });
+      }
+      // Clear all newweb_ prefixed keys from localStorage
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('newweb_')) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(k => localStorage.removeItem(k));
+    } catch (err) {
+      console.warn('Storage.clear failed:', err);
+    }
+  }
+
+  return { get, set, getMultiple, clear, DEFAULTS };
 })();

@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "New WEB",
-    "version": "2.1.0",
+    "version": "3.0.0",
     "description": "A premium, privacy-focused new tab experience with search, AI mode, weather, and favourite sites.",
     "chrome_url_overrides": {
         "newtab": "index.html"
@@ -12,7 +12,7 @@
         "favicon"
     ],
     "content_security_policy": {
-        "extension_pages": "script-src 'self'; object-src 'none';"
+        "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'self';"
     },
     "icons": {
         "16": "icons/icon-16.png",
@@ -23,6 +23,7 @@
         "https://api.open-meteo.com/*",
         "https://nominatim.openstreetmap.org/*",
         "https://duckduckgo.com/*",
-        "https://suggestqueries.google.com/*"
+        "https://suggestqueries.google.com/*",
+        "https://api.bing.com/*"
     ]
 }

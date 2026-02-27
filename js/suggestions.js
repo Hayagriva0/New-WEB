@@ -1,11 +1,9 @@
 /**
  * suggestions.js — Search Autocomplete
  * 
- * Works in BOTH contexts:
- * - Chrome Extension: direct fetch (CORS bypassed by host_permissions)
- * - Live Server / Dev: uses allorigins.win CORS proxy
- * 
- * Uses Google Suggest (primary) + DuckDuckGo (fallback).
+ * Uses Google Suggest (primary) + Bing (fallback) + DuckDuckGo (fallback).
+ * In extension context, fetches directly via host_permissions.
+ * In dev context, suggestions are disabled (no third-party proxy).
  */
 
 'use strict';
@@ -20,44 +18,56 @@ var Suggestions = (() => {
     var inputEl = null;
     var dropdown = null;
     var visible = false;
+    var searchCallback = null;
 
     /* Detect if running as a Chrome extension */
     var isExtension = !!(typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id &&
         window.location.protocol === 'chrome-extension:');
 
-    console.log('[Suggestions] Extension mode:', isExtension);
-
     /**
-     * Fetch URL with CORS handled automatically.
-     * In extension context, fetches directly (host_permissions bypass CORS).
-     * In dev context, uses allorigins.win as a CORS proxy.
+     * Fetch URL — only in extension context (host_permissions bypass CORS).
+     * In dev context, returns null (no third-party proxy for privacy).
      */
-    function corsAwareFetch(url) {
-        var fetchUrl = isExtension
-            ? url
-            : 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+    function safeFetch(url) {
+        if (!isExtension) {
+            return Promise.resolve(null);
+        }
 
-        console.log('[Suggestions] Fetching:', fetchUrl);
-
-        return fetch(fetchUrl, { method: 'GET' })
+        return fetch(url, { method: 'GET' })
             .then(function (response) {
-                console.log('[Suggestions] Status:', response.status);
                 if (!response.ok) return null;
                 return response.text();
             })
             .then(function (text) {
                 if (!text) return null;
-                console.log('[Suggestions] Got', text.length, 'chars');
-                return JSON.parse(text);
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    return null;
+                }
             })
-            .catch(function (err) {
-                console.warn('[Suggestions] Fetch error:', err.message);
+            .catch(function () {
                 return null;
             });
     }
 
     /**
-     * Fetch suggestions.
+     * Validate that data matches OpenSearch suggestion format: [query, [s1, s2, ...]]
+     */
+    function isValidOpenSearchResponse(data) {
+        return data && Array.isArray(data) && Array.isArray(data[1]) && data[1].length > 0 &&
+            data[1].every(function (item) { return typeof item === 'string'; });
+    }
+
+    /**
+     * Validate that data matches DuckDuckGo format: [{phrase: "..."}, ...]
+     */
+    function isValidDDGResponse(data) {
+        return Array.isArray(data) && data.length > 0 && data[0] && typeof data[0].phrase === 'string';
+    }
+
+    /**
+     * Fetch suggestions from multiple sources with fallback chain.
      */
     function fetchSuggestions(query) {
         var trimmed = (query || '').trim();
@@ -68,54 +78,76 @@ var Suggestions = (() => {
         /* Try Google Suggest first */
         var googleUrl = 'https://suggestqueries.google.com/complete/search?client=firefox&q=' + encoded;
 
-        return corsAwareFetch(googleUrl)
+        return safeFetch(googleUrl)
             .then(function (data) {
-                /* Google OpenSearch format: [query, [s1, s2, ...]] */
-                if (data && Array.isArray(data) && Array.isArray(data[1]) && data[1].length > 0) {
-                    console.log('[Suggestions] Google returned', data[1].length, 'results');
+                if (isValidOpenSearchResponse(data)) {
                     return data[1].slice(0, MAX_ITEMS);
                 }
 
                 /* Fallback to Bing Suggest */
-                console.log('[Suggestions] Google empty, trying Bing...');
                 var bingUrl = 'https://api.bing.com/osjson.aspx?query=' + encoded;
-                return corsAwareFetch(bingUrl);
+                return safeFetch(bingUrl);
             })
             .then(function (data) {
-                if (data && Array.isArray(data) && Array.isArray(data[1]) && data[1].length > 0) {
-                    console.log('[Suggestions] Bing returned', data[1].length, 'results');
+                if (isValidOpenSearchResponse(data)) {
                     return data[1].slice(0, MAX_ITEMS);
                 }
 
+                /* If it's already an array of strings (from Google success), return it */
+                if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'string') {
+                    return data;
+                }
+
                 /* Fallback to DuckDuckGo */
-                console.log('[Suggestions] Bing empty, trying DuckDuckGo...');
                 var ddgUrl = 'https://duckduckgo.com/ac/?q=' + encoded;
-                return corsAwareFetch(ddgUrl);
+                return safeFetch(ddgUrl);
             })
             .then(function (data) {
                 if (!data) return [];
-                /* If it's already an array of strings (from Google/Bing success), return it */
+                /* If it's already an array of strings (from previous success), return it */
                 if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'string') {
                     return data;
                 }
                 /* DuckDuckGo format: [{phrase: "..."}, ...] */
-                if (Array.isArray(data) && data.length > 0 && data[0] && data[0].phrase) {
-                    var results = data.slice(0, MAX_ITEMS).map(function (d) { return d.phrase; });
-                    console.log('[Suggestions] DuckDuckGo returned', results.length, 'results');
-                    return results;
+                if (isValidDDGResponse(data)) {
+                    return data.slice(0, MAX_ITEMS).map(function (d) {
+                        return typeof d.phrase === 'string' ? d.phrase : '';
+                    }).filter(Boolean);
                 }
                 return [];
             })
-            .catch(function (err) {
-                console.error('[Suggestions] All sources failed:', err);
+            .catch(function () {
                 return [];
             });
     }
 
-    function escapeHTML(str) {
-        var el = document.createElement('span');
-        el.textContent = str;
-        return el.innerHTML;
+    /**
+     * Create the search icon SVG element for a suggestion item.
+     */
+    function createSearchIcon() {
+        var svgNS = 'http://www.w3.org/2000/svg';
+        var svg = document.createElementNS(svgNS, 'svg');
+        svg.setAttribute('width', '14');
+        svg.setAttribute('height', '14');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        svg.setAttribute('stroke-width', '2');
+
+        var circle = document.createElementNS(svgNS, 'circle');
+        circle.setAttribute('cx', '11');
+        circle.setAttribute('cy', '11');
+        circle.setAttribute('r', '8');
+
+        var line = document.createElementNS(svgNS, 'line');
+        line.setAttribute('x1', '21');
+        line.setAttribute('y1', '21');
+        line.setAttribute('x2', '16.65');
+        line.setAttribute('y2', '16.65');
+
+        svg.appendChild(circle);
+        svg.appendChild(line);
+        return svg;
     }
 
     function renderItems(results) {
@@ -127,15 +159,24 @@ var Suggestions = (() => {
             return;
         }
 
-        console.log('[Suggestions] Rendering', results.length, 'items');
-
-        var html = '';
-        for (var i = 0; i < results.length; i++) {
-            html += '<div class="suggestion-item" data-idx="' + i + '">' +
-                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>' +
-                '<span>' + escapeHTML(results[i]) + '</span></div>';
+        /* Clear dropdown safely */
+        while (dropdown.firstChild) {
+            dropdown.removeChild(dropdown.firstChild);
         }
-        dropdown.innerHTML = html;
+
+        for (var i = 0; i < results.length; i++) {
+            var item = document.createElement('div');
+            item.className = 'suggestion-item';
+            item.setAttribute('data-idx', String(i));
+
+            item.appendChild(createSearchIcon());
+
+            var textSpan = document.createElement('span');
+            textSpan.textContent = results[i];
+            item.appendChild(textSpan);
+
+            dropdown.appendChild(item);
+        }
         show();
     }
 
@@ -222,19 +263,20 @@ var Suggestions = (() => {
         e.preventDefault();
         e.stopPropagation();
         var idx = parseInt(target.getAttribute('data-idx'), 10);
-        if (items[idx]) {
+        if (!isNaN(idx) && idx >= 0 && idx < items.length && items[idx]) {
             inputEl.value = items[idx];
             hide();
-            if (typeof window._doSearch === 'function') window._doSearch();
+            if (typeof searchCallback === 'function') searchCallback();
         }
     }
 
-    function init(input, dd) {
+    function init(input, dd, doSearchFn) {
         inputEl = input;
         dropdown = dd;
+        searchCallback = doSearchFn || null;
 
         if (!inputEl || !dropdown) {
-            console.error('[Suggestions] Missing DOM elements!');
+            console.warn('[Suggestions] Missing DOM elements');
             return;
         }
 
@@ -250,8 +292,6 @@ var Suggestions = (() => {
         document.addEventListener('click', function (e) {
             if (!inputEl.contains(e.target) && !dropdown.contains(e.target)) hide();
         });
-
-        console.log('[Suggestions] Ready ✓ (mode: ' + (isExtension ? 'extension' : 'dev/proxy') + ')');
     }
 
     return { init: init, hide: hide };

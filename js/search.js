@@ -25,14 +25,19 @@ const Search = (() => {
         var trimmed = (query || '').trim();
         if (!trimmed) return;
 
+        /* Validate mode */
+        var safeMode = (mode === 'ai' || mode === 'search') ? mode : 'search';
+
+        /* Validate engine against whitelist */
+        var safeEngine = ENGINES.hasOwnProperty(engine) ? engine : 'duckduckgo';
+
         var encoded = encodeURIComponent(trimmed);
         var url = '';
 
-        if (mode === 'ai') {
+        if (safeMode === 'ai') {
             url = AI_URL.replace('%s', encoded);
         } else {
-            var base = ENGINES[engine] || ENGINES['duckduckgo'];
-            url = base + encoded;
+            url = ENGINES[safeEngine] + encoded;
         }
 
         window.location.href = url;

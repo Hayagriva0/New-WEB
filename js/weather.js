@@ -49,8 +49,19 @@ var Weather = (() => {
     /**
      * Fetch weather using Open-Meteo (no API key needed).
      */
+    /**
+     * Validate latitude and longitude values.
+     */
+    function isValidCoords(lat, lon) {
+        return typeof lat === 'number' && typeof lon === 'number' &&
+            isFinite(lat) && isFinite(lon) &&
+            lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180;
+    }
+
     async function fetchWeather(lat, lon) {
         try {
+            if (!isValidCoords(lat, lon)) return null;
+
             var url = API_BASE + '?latitude=' + lat + '&longitude=' + lon +
                 '&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m' +
                 '&daily=temperature_2m_max,temperature_2m_min' +
@@ -59,6 +70,11 @@ var Weather = (() => {
             var response = await fetch(url);
             if (!response.ok) return null;
             var data = await response.json();
+
+            /* Validate response shape */
+            if (!data || !data.current || typeof data.current.temperature_2m !== 'number') {
+                return null;
+            }
 
             var current = data.current;
             var daily = data.daily;
@@ -70,9 +86,11 @@ var Weather = (() => {
                 icon: weatherInfo.icon,
                 desc: weatherInfo.desc,
                 humidity: current.relative_humidity_2m,
-                wind: Math.round(current.wind_speed_10m),
-                high: daily ? Math.round(daily.temperature_2m_max[0]) : null,
-                low: daily ? Math.round(daily.temperature_2m_min[0]) : null
+                wind: Math.round(current.wind_speed_10m || 0),
+                high: (daily && Array.isArray(daily.temperature_2m_max) && daily.temperature_2m_max.length > 0)
+                    ? Math.round(daily.temperature_2m_max[0]) : null,
+                low: (daily && Array.isArray(daily.temperature_2m_min) && daily.temperature_2m_min.length > 0)
+                    ? Math.round(daily.temperature_2m_min[0]) : null
             };
         } catch (err) {
             console.warn('Weather fetch failed:', err);
@@ -105,14 +123,26 @@ var Weather = (() => {
     /**
      * Reverse geocode to get city name (using Open-Meteo geocoding).
      */
+    /**
+     * Sanitize a city name string: trim, remove control chars, limit length.
+     */
+    function sanitizeCityName(name) {
+        if (!name || typeof name !== 'string') return 'Your Location';
+        var s = name.trim().replace(/[\x00-\x1F\x7F]/g, '');
+        return s.substring(0, 60) || 'Your Location';
+    }
+
     async function getCityName(lat, lon) {
         try {
+            if (!isValidCoords(lat, lon)) return 'Your Location';
             var url = 'https://nominatim.openstreetmap.org/reverse?lat=' + lat +
                 '&lon=' + lon + '&format=json&zoom=10';
             var response = await fetch(url);
             if (!response.ok) return 'Your Location';
             var data = await response.json();
-            return data.address.city || data.address.town || data.address.village || 'Your Location';
+            if (!data || !data.address) return 'Your Location';
+            var raw = data.address.city || data.address.town || data.address.village || '';
+            return sanitizeCityName(raw);
         } catch {
             return 'Your Location';
         }
@@ -122,7 +152,7 @@ var Weather = (() => {
         try {
             var widget = document.getElementById('weather-widget');
             if (!widget || !data) {
-                if (widget) widget.style.display = 'none';
+                if (widget) widget.classList.add('hidden');
                 return;
             }
 
@@ -137,7 +167,7 @@ var Weather = (() => {
                 hiLo.textContent = 'H:' + data.high + '° L:' + data.low + '°';
             }
 
-            widget.style.display = 'flex';
+            widget.classList.remove('hidden');
         } catch (err) {
             console.warn('Weather render failed:', err);
         }
@@ -149,16 +179,17 @@ var Weather = (() => {
 
             if (!settings.weatherEnabled) return;
 
-            var lat = settings.weatherLat;
-            var lon = settings.weatherLon;
+            var lat = typeof settings.weatherLat === 'number' ? settings.weatherLat : null;
+            var lon = typeof settings.weatherLon === 'number' ? settings.weatherLon : null;
             var city = settings.weatherCity;
 
-            /* If no stored location, try geolocation */
-            if (!lat || !lon) {
+            /* If no valid stored location, try geolocation */
+            if (!isValidCoords(lat, lon)) {
                 var loc = await getLocation();
                 if (!loc) return;
                 lat = loc.lat;
                 lon = loc.lon;
+                if (!isValidCoords(lat, lon)) return;
                 city = await getCityName(lat, lon);
                 /* Store for future use */
                 Storage.set('weatherLat', lat);
