@@ -25,7 +25,7 @@
 <div align="center">
   <img src="assets/screenshot1.png" alt="Home Screen" width="800" />
   <br/><br/>
-  <img src="assets/screenshot2.jpeg" alt="Settings Screen" width="800" />
+  <img src="assets/Screenshot2.jpeg" alt="Settings Screen" width="800" />
   <br/><br/>
   <img src="assets/screenshot3.jpg" alt="Search Screen" width="800" /> 
   <br/><br/>
