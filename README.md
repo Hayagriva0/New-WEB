@@ -5,7 +5,7 @@
 
   **A premium, privacy-focused new tab experience with search, AI mode, weather, and favourite sites.**
 
-  [![Chrome Web Store](https://img.shields.io/badge/Chrome-Available-blue?logo=googlechrome&logoColor=white)](#)
+  [![Firefox Add-ons](https://img.shields.io/badge/Firefox-Available-blue?logo=firefox&logoColor=white)](https://addons.mozilla.org/en-US/firefox/addon/new-web/)
   [![Microsoft Edge Add-ons](https://img.shields.io/badge/Edge-Available-blue?logo=microsoftedge&logoColor=white)](https://microsoftedge.microsoft.com/addons/detail/cdgkeoiilacohpjkdakhpelhenaajeia)
 
 </div>
