@@ -12,15 +12,15 @@
 
 ---
 
-## ✨ Features
+##  Features
 
-- 🔒 **Privacy-focused Search**: Quick access to DuckDuckGo and Google search suggestions.
-- 🤖 **AI Mode**: Seamless integration for AI-assisted queries right from your new tab.
-- ⛅ **Weather Widget**: Real-time accurate weather updates using your local area.
-- 🔖 **Favourite Sites**: Easy and quick access to your most visited and curated websites.
-- 🎨 **Premium Aesthetic**: A beautifully crafted, modern, and clean interface that feels native and refined.
+-  **Privacy-focused Search**: Quick access to DuckDuckGo and Google search suggestions.
+-  **AI Mode**: Seamless integration for AI-assisted queries right from your new tab.
+-  **Weather Widget**: Real-time accurate weather updates using your local area.
+-  **Favourite Sites**: Easy and quick access to your most visited and curated websites.
+-  **Premium Aesthetic**: A beautifully crafted, modern, and clean interface that feels native and refined.
 
-## 🖼️ Screenshots
+##  Screenshots
 
 <div align="center">
   <img src="assets/screenshot1.png" alt="Home Screen" width="800" />
@@ -32,7 +32,7 @@
   <img src="assets/screenshot4.jpg" alt="Code Snippet View" width="800" />
 </div>
 
-## 🚀 Installation
+##  Installation
 
 ### Using the Chrome Web Store / Edge Add-ons
 *(Coming soon)*
