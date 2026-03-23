@@ -43,6 +43,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var greetingEl = document.getElementById('greeting');
     var dateEl = document.getElementById('date-display');
     var weatherWidget = document.getElementById('weather-widget');
+    var mainLogoImg = document.getElementById('main-logo-img');
+    var logoStyleCards = document.querySelectorAll('.logo-style-btn');
 
     var currentMode = 'search';
     var searchEngine = 'duckduckgo';
@@ -241,10 +243,21 @@ document.addEventListener('DOMContentLoaded', function () {
         var tabBtns = document.querySelectorAll('.settings-tab-btn');
         var tabPanes = document.querySelectorAll('.settings-tab-pane');
 
+        var CURRENT_VERSION = '4.0.0';
+        var seenVersion = Storage.get('seenVersion');
+        var updateDot = document.getElementById('settings-update-dot');
+        if (seenVersion !== CURRENT_VERSION && updateDot) {
+            updateDot.classList.remove('hidden');
+        }
+
         function openSettings() {
             settingsOpen = true;
             if (settingsModal) settingsModal.classList.add('active');
             if (settingsBackdrop) settingsBackdrop.classList.add('active');
+            if (updateDot && !updateDot.classList.contains('hidden')) {
+                updateDot.classList.add('hidden');
+                Storage.set('seenVersion', CURRENT_VERSION).catch(function () {});
+            }
         }
         function closeSettings() {
             settingsOpen = false;
@@ -286,6 +299,43 @@ document.addEventListener('DOMContentLoaded', function () {
                         pane.classList.remove('active');
                     }
                 });
+            });
+        });
+
+        // Logo Switching Logic
+        var currentLogo = 'icon.svg';
+        var VALID_LOGOS = ['icon.svg', 'icon-bloom.svg', 'icon-pulse.svg', 'icon-radiant.svg', 'icon-halo.svg', 'icon-vortex.svg'];
+
+        function updateLogoCardsUI(activeLogo) {
+            logoStyleCards.forEach(function (card) {
+                if (card.dataset.logo === activeLogo) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+        }
+
+        function applyLogoStyle(logoName) {
+            if (mainLogoImg && logoName) {
+                mainLogoImg.src = 'icons/' + logoName;
+            }
+        }
+
+        Storage.get('logoStyle').then(function (val) {
+            if (val && VALID_LOGOS.indexOf(val) !== -1) {
+                currentLogo = val;
+            }
+            updateLogoCardsUI(currentLogo);
+            applyLogoStyle(currentLogo);
+        }).catch(function () { });
+
+        logoStyleCards.forEach(function (card) {
+            card.addEventListener('click', function (e) {
+                currentLogo = e.currentTarget.dataset.logo;
+                Storage.set('logoStyle', currentLogo).catch(function () { });
+                updateLogoCardsUI(currentLogo);
+                applyLogoStyle(currentLogo);
             });
         });
 

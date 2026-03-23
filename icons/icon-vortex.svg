@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <radialGradient id="vortex-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" />
+      <stop offset="20%" stop-color="#0f172a" />
+      <stop offset="80%" stop-color="#020617" />
+    </radialGradient>
+    <linearGradient id="swirl1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="swirl2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#4f46e5" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <g transform="translate(60,60)">
+    <!-- Event Horizon Background -->
+    <circle cx="0" cy="0" r="52" fill="url(#vortex-core)"/>
+    
+    <!-- Outer Rim Edge Glow -->
+    <circle cx="0" cy="0" r="51" fill="none" stroke="#22d3ee" stroke-width="2" opacity="0.4" filter="url(#glow)"/>
+    <circle cx="0" cy="0" r="48" fill="none" stroke="#c084fc" stroke-width="1" stroke-dasharray="4 8" opacity="0.5">
+       <animateTransform attributeName="transform" type="rotate" values="360; 0" dur="20s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Deep 3D Rings -->
+    <g stroke-width="1.5" fill="none" opacity="0.6">
+       <animateTransform attributeName="transform" type="rotate" values="0; 360" dur="15s" repeatCount="indefinite"/>
+       <ellipse cx="0" cy="0" rx="45" ry="15" stroke="#3b82f6" transform="rotate(20)"/>
+       <ellipse cx="0" cy="0" rx="45" ry="15" stroke="#a855f7" transform="rotate(70)"/>
+    </g>
+
+    <!-- Swirling Fluid Arms (Cyan) -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" values="0; -360" dur="4s" repeatCount="indefinite"/>
+      <path d="M 0,-52 C 40,-30 40,30 0,0" fill="none" stroke="url(#swirl1)" stroke-width="4" stroke-linecap="round" filter="url(#glow)">
+        <animateTransform attributeName="transform" type="scale" values="1; 0.1" dur="2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1; 0" dur="2s" repeatCount="indefinite"/>
+      </path>
+      <path d="M 0,52 C -40,30 -40,-30 0,0" fill="none" stroke="url(#swirl1)" stroke-width="4" stroke-linecap="round" filter="url(#glow)">
+        <animateTransform attributeName="transform" type="scale" values="1; 0.1" dur="2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1; 0" dur="2s" repeatCount="indefinite"/>
+      </path>
+    </g>
+
+    <!-- Swirling Fluid Arms (Purple delayed) -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" values="90; -270" dur="4.5s" repeatCount="indefinite"/>
+      <path d="M 52,0 C 30,40 -30,40 0,0" fill="none" stroke="url(#swirl2)" stroke-width="4" stroke-linecap="round" filter="url(#glow)">
+        <animateTransform attributeName="transform" type="scale" values="1; 0.1" dur="2.5s" begin="1s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1; 0" dur="2.5s" begin="1s" repeatCount="indefinite"/>
+      </path>
+      <path d="M -52,0 C -30,-40 30,-40 0,0" fill="none" stroke="url(#swirl2)" stroke-width="4" stroke-linecap="round" filter="url(#glow)">
+        <animateTransform attributeName="transform" type="scale" values="1; 0.1" dur="2.5s" begin="1s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1; 0" dur="2.5s" begin="1s" repeatCount="indefinite"/>
+      </path>
+    </g>
+
+    <!-- Center Singularity Point -->
+    <circle cx="0" cy="0" r="3" fill="#fff" filter="url(#glow)">
+       <animate attributeName="r" values="2; 5; 2" dur="0.8s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>

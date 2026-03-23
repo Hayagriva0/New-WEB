@@ -43,6 +43,7 @@
         <path
           d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
       </svg>
+      <span id="settings-update-dot" class="update-new-badge hidden">NEW</span>
     </button>
   </div>
 
@@ -174,7 +175,7 @@
         </div>
 
         <div class="settings-version">
-          <span>New WEB v3.0.0</span>
+          <span>New WEB v4.0.0</span>
           <span class="settings-version-sub">Privacy-focused new tab</span>
         </div>
       </div>
@@ -269,6 +270,42 @@
                   <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
                 Remove
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label">
+            Logo Style
+            <span class="badge-new">NEW</span>
+          </label>
+          <p class="settings-group-hint">Select a dynamic logo</p>
+          <div class="settings-group-content box-group">
+            <div class="logo-styles-grid" id="logo-styles-container">
+              <button class="logo-style-btn active" data-logo="icon.svg" aria-label="Orbital">
+                <img src="icons/icon.svg" width="36" height="36" alt="">
+                <span>Orbital</span>
+              </button>
+              <button class="logo-style-btn" data-logo="icon-bloom.svg" aria-label="Bloom">
+                <img src="icons/icon-bloom.svg" width="36" height="36" alt="">
+                <span>Bloom</span>
+              </button>
+              <button class="logo-style-btn" data-logo="icon-pulse.svg" aria-label="Pulse">
+                <img src="icons/icon-pulse.svg" width="36" height="36" alt="">
+                <span>Pulse</span>
+              </button>
+              <button class="logo-style-btn" data-logo="icon-radiant.svg" aria-label="Radiant">
+                <img src="icons/icon-radiant.svg" width="36" height="36" alt="">
+                <span>Radiant</span>
+              </button>
+              <button class="logo-style-btn" data-logo="icon-halo.svg" aria-label="Halo">
+                <img src="icons/icon-halo.svg" width="36" height="36" alt="">
+                <span>Halo</span>
+              </button>
+              <button class="logo-style-btn" data-logo="icon-vortex.svg" aria-label="Vortex">
+                <img src="icons/icon-vortex.svg" width="36" height="36" alt="">
+                <span>Vortex</span>
               </button>
             </div>
           </div>
@@ -393,7 +430,7 @@
 
     <!-- Logo -->
     <div class="logo-container fade-in" id="main-logo-container">
-      <img src="icons/icon.svg" alt="New WEB" class="logo" width="76" height="76">
+      <img src="icons/icon.svg" alt="New WEB" class="logo" id="main-logo-img" width="76" height="76">
     </div>
 
     <!-- Mode Toggle -->
