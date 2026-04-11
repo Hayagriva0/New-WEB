@@ -244,11 +244,12 @@ document.addEventListener('DOMContentLoaded', function () {
         var tabPanes = document.querySelectorAll('.settings-tab-pane');
 
         var CURRENT_VERSION = '4.0.0';
-        var seenVersion = Storage.get('seenVersion');
         var updateDot = document.getElementById('settings-update-dot');
-        if (seenVersion !== CURRENT_VERSION && updateDot) {
-            updateDot.classList.remove('hidden');
-        }
+        Storage.get('seenVersion').then(function (seenVersion) {
+            if (seenVersion !== CURRENT_VERSION && updateDot) {
+                updateDot.classList.remove('hidden');
+            }
+        }).catch(function () { });
 
         function openSettings() {
             settingsOpen = true;
