@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#000">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New WEB</title>
+  <meta name="description" content="A premium, privacy-focused new tab experience.">
+  <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="js/theme-init.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- ===== TOP BAR ===== -->
+  <div class="top-bar">
+    <!-- Weather Widget (left) -->
+    <div id="weather-widget" class="weather-widget hidden">
+      <div class="weather-card">
+        <!-- Top Details -->
+        <div class="weather-top-details">
+          <div class="detail-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#11d8d8" stroke-width="2" width="20" height="20">
+              <path d="M12 22C16.4183 22 20 18.4183 20 14C20 9.58172 12 2 12 2C12 2 4 9.58172 4 14C4 18.4183 7.58172 22 12 22Z" />
+            </svg>
+            <div class="detail-text">
+              <span class="detail-label">Humidity</span>
+              <span class="detail-val" id="weather-humidity">--%</span>
+            </div>
+          </div>
+          <div class="detail-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#11d8d8" stroke-width="2" width="20" height="20">
+              <path d="M4 12H16M4 8H12M4 16H20M16 12C16 10.8954 16.8954 10 18 10C19.1046 10 20 10.8954 20 12C20 13.1046 19.1046 14 18 14H16M20 16C20 14.8954 20.8954 14 22 14C23.1046 14 24 14.8954 24 16C24 17.1046 23.1046 18 22 18H20" />
+            </svg>
+            <div class="detail-text">
+              <span class="detail-label">Wind</span>
+              <span class="detail-val" id="weather-wind">-- Km/h</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Panel -->
+        <div class="weather-main-panel">
+          <div class="weather-graphics">
+            <div class="sun"></div>
+            <div class="cloud"></div>
+          </div>
+          <div class="weather-info">
+            <div class="temp"><span id="weather-temp">--°C</span></div>
+            <div class="city" id="weather-city">Loading...</div>
+          </div>
+        </div>
+
+        <!-- Bottom Details -->
+        <div class="weather-bottom-details">
+          <div class="detail-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#11d8d8" stroke-width="2" width="16" height="16">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <div class="detail-text">
+              <span class="detail-label">AQI</span>
+              <span class="detail-val" id="weather-aqi">--</span>
+            </div>
+          </div>
+          <div class="detail-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#11d8d8" stroke-width="2" width="16" height="16">
+              <path d="M12 9v2m0 4v.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <div class="detail-text">
+              <span class="detail-label">Real Feel</span>
+              <span class="detail-val" id="weather-realfeel">--°C</span>
+            </div>
+          </div>
+          <div class="detail-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#11d8d8" stroke-width="2" width="16" height="16">
+              <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>
+            </svg>
+            <div class="detail-text">
+              <span class="detail-label">Pressure</span>
+              <span class="detail-val" id="weather-pressure">-- mbar</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="weather-status-bar" id="weather-status-bar">Healthy</div>
+      </div>
+    </div>
+
+    <div class="top-bar-spacer"></div>
+
+    <!-- Settings Gear (right) -->
+    <button id="settings-btn" class="settings-btn" aria-label="Settings" title="Settings">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3" />
+        <path
+          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+      </svg>
+      <span id="settings-update-dot" class="update-new-badge hidden">NEW</span>
+    </button>
+  </div>
+
+  <!-- ===== SETTINGS MODAL ===== -->
+  <div id="settings-backdrop" class="settings-backdrop"></div>
+  <div id="settings-modal" class="settings-modal">
+
+    <!-- Sidebar -->
+    <div class="settings-sidebar">
+      <h3 class="settings-title">Settings</h3>
+      <nav class="settings-nav">
+        <button class="settings-tab-btn active" data-tab="general">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z">
+            </path>
+          </svg>
+          General
+        </button>
+        <button class="settings-tab-btn" data-tab="appearance">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          Appearance
+        </button>
+        <button class="settings-tab-btn" data-tab="dashboard">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          Dashboard
+        </button>
+      </nav>
+      <div class="settings-sidebar-spacer"></div>
+      <button id="close-settings-btn" class="settings-close-btn">Done</button>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="settings-content">
+
+      <!-- GENERAL TAB -->
+      <div class="settings-tab-pane active" id="tab-general">
+        <h2 class="settings-pane-title">General</h2>
+
+        <div class="settings-group">
+          <label class="settings-label">Search Engine</label>
+          <p class="settings-group-hint">Select your preferred search provider</p>
+          <div class="settings-group-content">
+            <div class="engine-selector">
+              <button class="engine-btn active" data-engine-value="duckduckgo"
+                aria-label="DuckDuckGo">DuckDuckGo</button>
+              <button class="engine-btn" data-engine-value="google" aria-label="Google">Google</button>
+              <button class="engine-btn" data-engine-value="bing" aria-label="Bing">Bing</button>
+              <button class="engine-btn" data-engine-value="brave" aria-label="Brave">Brave</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label">Weather</label>
+          <div class="settings-group-content box-group">
+            <div class="settings-toggle-row">
+              <div class="settings-row-info">
+                <span>Enable Weather</span>
+                <p class="settings-hint">Uses location via Open-Meteo. No API key needed.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="weather-toggle" title="Toggle weather">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label">Connect</label>
+          <div class="settings-group-content box-group">
+            <div class="settings-action-row">
+              <a href="mailto:hydra007@duck.com" class="settings-link-btn" title="Send Feedback">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+                Feedback
+              </a>
+              <a href="https://github.com/Hayagriva0" target="_blank" rel="noopener noreferrer"
+                class="settings-link-btn" title="View on GitHub">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path
+                    d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                </svg>
+                GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label">Data</label>
+          <div class="settings-group-content box-group">
+            <div class="settings-action-row">
+              <button id="reset-settings-btn" class="settings-link-btn text-danger"
+                title="Reset all settings to defaults">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="1 4 1 10 7 10"></polyline>
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                </svg>
+                Reset Settings
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-version">
+          <span>New WEB v4.0.1</span>
+          <span class="settings-version-sub">Privacy-focused new tab</span>
+        </div>
+      </div>
+
+      <!-- APPEARANCE TAB -->
+      <div class="settings-tab-pane hidden" id="tab-appearance">
+        <h2 class="settings-pane-title">Appearance</h2>
+
+        <div class="settings-group">
+          <label class="settings-label">Color Theme</label>
+          <p class="settings-group-hint">Choose your color palette</p>
+          <div class="settings-group-content">
+            <div class="theme-swatch-picker">
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-system" data-theme-value="system" aria-label="System"
+                  title="System"></button>
+                <span class="swatch-label">Auto</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-dark" data-theme-value="dark" aria-label="Dark"
+                  title="Dark"></button>
+                <span class="swatch-label">Dark</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-light" data-theme-value="light" aria-label="Light"
+                  title="Light"></button>
+                <span class="swatch-label">Light</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-midnight" data-theme-value="midnight" aria-label="Midnight"
+                  title="Midnight"></button>
+                <span class="swatch-label">Midnight</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-ocean" data-theme-value="ocean" aria-label="Ocean"
+                  title="Ocean"></button>
+                <span class="swatch-label">Ocean</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-forest" data-theme-value="forest" aria-label="Forest"
+                  title="Forest"></button>
+                <span class="swatch-label">Forest</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-crimson" data-theme-value="crimson" aria-label="Crimson"
+                  title="Crimson"></button>
+                <span class="swatch-label">Crimson</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-lavender" data-theme-value="lavender" aria-label="Lavender"
+                  title="Lavender"></button>
+                <span class="swatch-label">Lavender</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-rose" data-theme-value="rose" aria-label="Rose"
+                  title="Rose"></button>
+                <span class="swatch-label">Rosé</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-sunset" data-theme-value="sunset" aria-label="Sunset"
+                  title="Sunset"></button>
+                <span class="swatch-label">Sunset</span>
+              </div>
+              <div class="theme-swatch-item">
+                <button class="theme-swatch swatch-arctic" data-theme-value="arctic" aria-label="Arctic"
+                  title="Arctic"></button>
+                <span class="swatch-label">Arctic</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label">Wallpaper</label>
+          <p class="settings-group-hint">Set a custom background image</p>
+          <div class="settings-group-content box-group">
+            <div class="wallpaper-controls">
+              <label for="wallpaper-upload" class="settings-link-btn flex-center">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                Upload Image
+              </label>
+              <input type="file" id="wallpaper-upload" accept="image/*" class="hidden">
+              <button id="wallpaper-remove" class="settings-link-btn text-danger hidden" title="Remove wallpaper">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label">
+            Logo Style
+            <span class="badge-new">NEW</span>
+          </label>
+          <p class="settings-group-hint">Select a dynamic logo</p>
+          <div class="settings-group-content box-group">
+            <div class="logo-styles-grid" id="logo-styles-container">
+              <button class="logo-style-btn active" data-logo="icon.svg" aria-label="Orbital">
+                <img src="icons/icon.svg" width="36" height="36" alt="">
+                <span>Orbital</span>
+              </button>
+              <button class="logo-style-btn" data-logo="icon-bloom.svg" aria-label="Bloom">
+                <img src="icons/icon-bloom.svg" width="36" height="36" alt="">
+                <span>Bloom</span>
+              </button>
+              <button class="logo-style-btn" data-logo="icon-pulse.svg" aria-label="Pulse">
+                <img src="icons/icon-pulse.svg" width="36" height="36" alt="">
+                <span>Pulse</span>
+              </button>
+              <button class="logo-style-btn" data-logo="icon-radiant.svg" aria-label="Radiant">
+                <img src="icons/icon-radiant.svg" width="36" height="36" alt="">
+                <span>Radiant</span>
+              </button>
+              <button class="logo-style-btn" data-logo="icon-halo.svg" aria-label="Halo">
+                <img src="icons/icon-halo.svg" width="36" height="36" alt="">
+                <span>Halo</span>
+              </button>
+              <button class="logo-style-btn" data-logo="icon-vortex.svg" aria-label="Vortex">
+                <img src="icons/icon-vortex.svg" width="36" height="36" alt="">
+                <span>Vortex</span>
+              </button>
+              <button class="logo-style-btn" data-logo="loader" aria-label="Loader">
+                <div style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+                  <div class="loader" style="--size: 0.36;">
+                    <div class="box" style="mask: url(#clipping); -webkit-mask: url(#clipping);"></div>
+                  </div>
+                </div>
+                <span>Loader</span>
+              </button>
+              <button class="logo-style-btn" data-logo="hamster" aria-label="Hamster">
+                <div style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+                  <div class="wheel-and-hamster" style="font-size: 3px;">
+                    <div class="wheel"></div>
+                    <div class="hamster">
+                      <div class="hamster__body">
+                        <div class="hamster__head">
+                          <div class="hamster__ear"></div>
+                          <div class="hamster__eye"></div>
+                          <div class="hamster__nose"></div>
+                        </div>
+                        <div class="hamster__limb hamster__limb--fr"></div>
+                        <div class="hamster__limb hamster__limb--fl"></div>
+                        <div class="hamster__limb hamster__limb--br"></div>
+                        <div class="hamster__limb hamster__limb--bl"></div>
+                        <div class="hamster__tail"></div>
+                      </div>
+                    </div>
+                    <div class="spoke"></div>
+                  </div>
+                </div>
+                <span>Hamster</span>
+              </button>
+              <button class="logo-style-btn" data-logo="neon" aria-label="Neon">
+                <div style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+                  <div class="neon-loader" style="transform: scale(0.45);">
+                    <div class="circle"></div>
+                  </div>
+                </div>
+                <span>Neon</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label">
+            Icon Shape
+            <span class="badge-new">NEW</span>
+          </label>
+          <p class="settings-group-hint">Choose a shape for favourite icons</p>
+          <div class="settings-group-content">
+            <div class="icon-shape-picker" id="icon-shape-container">
+              <button class="icon-shape-btn selected" data-shape="squircle" aria-label="Squircle" title="Squircle">
+                <div class="icon-shape-preview shape-squircle"></div>
+                <span>Squircle</span>
+              </button>
+              <button class="icon-shape-btn" data-shape="circle" aria-label="Circle" title="Circle">
+                <div class="icon-shape-preview shape-circle"></div>
+                <span>Circle</span>
+              </button>
+              <button class="icon-shape-btn" data-shape="rounded" aria-label="Rounded" title="Rounded">
+                <div class="icon-shape-preview shape-rounded"></div>
+                <span>Rounded</span>
+              </button>
+              <button class="icon-shape-btn" data-shape="blob" aria-label="Blob" title="Blob">
+                <div class="icon-shape-preview shape-blob"></div>
+                <span>Blob</span>
+              </button>
+              <button class="icon-shape-btn" data-shape="pebble" aria-label="Pebble" title="Pebble">
+                <div class="icon-shape-preview shape-pebble"></div>
+                <span>Pebble</span>
+              </button>
+              <button class="icon-shape-btn" data-shape="square" aria-label="Square" title="Square">
+                <div class="icon-shape-preview shape-square"></div>
+                <span>Square</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label">Clock Font</label>
+          <p class="settings-group-hint">Pick a style for the clock display</p>
+          <div class="settings-group-content">
+            <div class="clock-styles-scroll" id="clock-styles-container">
+              <button class="clock-style-card clock-style-default" data-style="default"
+                aria-label="System">12:34</button>
+              <button class="clock-style-card clock-style-thin" data-style="thin" aria-label="Light">12:34</button>
+              <button class="clock-style-card clock-style-bold" data-style="bold" aria-label="Heavy">12:34</button>
+              <button class="clock-style-card clock-style-rounded" data-style="rounded"
+                aria-label="Rounded">12:34</button>
+              <button class="clock-style-card clock-style-condensed" data-style="condensed"
+                aria-label="Narrow">12:34</button>
+              <button class="clock-style-card clock-style-serif" data-style="serif" aria-label="Classic">12:34</button>
+              <button class="clock-style-card clock-style-digital" data-style="digital"
+                aria-label="Digital">12:34</button>
+              <button class="clock-style-card clock-style-script" data-style="script"
+                aria-label="Elegant">12:34</button>
+              <button class="clock-style-card clock-style-outline" data-style="outline"
+                aria-label="Outline">12:34</button>
+              <button class="clock-style-card clock-style-neon" data-style="neon" aria-label="Neon">12:34</button>
+              <button class="clock-style-card clock-style-retro" data-style="retro" aria-label="Retro">12:34</button>
+              <button class="clock-style-card clock-style-bubble" data-style="bubble" aria-label="Bubble">12:34</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DASHBOARD TAB -->
+      <div class="settings-tab-pane hidden" id="tab-dashboard">
+        <h2 class="settings-pane-title">Dashboard</h2>
+
+        <div class="settings-group">
+          <label class="settings-label">Module Visibility</label>
+          <p class="settings-group-hint">Show or hide sections on your new tab</p>
+          <div class="settings-group-content box-group">
+            <div class="settings-toggle-row">
+              <span>Clock</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="clock-toggle" title="Toggle Clock" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-row">
+              <span>24-Hour Clock</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="clock-format-toggle" title="Toggle 24h clock">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-row">
+              <span>Greeting</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="greeting-toggle" title="Toggle Greeting" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-row">
+              <span>Date</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="date-toggle" title="Toggle Date" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-row">
+              <span>Center Logo</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="logo-toggle" title="Toggle Logo" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-row">
+              <span>Favourites</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="favourites-toggle" title="Toggle Favourites" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-row">
+              <span>Frequently Visited</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="top-sites-toggle" title="Toggle Frequently Visited" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-toggle-row">
+              <span>Quick Notes</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="notes-toggle" title="Toggle Quick Notes" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            </div>
+            <div class="settings-toggle-row row-last">
+              <span>Usage Insight</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="usage-toggle" title="Toggle Usage Insight" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-container">
+
+    <!-- Clock / Greeting -->
+    <div class="greeting-section fade-in">
+      <div id="clock" class="clock">00:00</div>
+      <div id="greeting" class="greeting">Good evening</div>
+      <div id="date-display" class="date-display"></div>
+    </div>
+
+    <!-- Logo -->
+    <div class="logo-container fade-in" id="main-logo-container">
+      <img src="icons/icon.svg" alt="New WEB" class="logo" id="main-logo-img" width="76" height="76">
+      
+      <div class="loader" id="loader-logo" style="display: none; --size: 0.76;">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <defs>
+            <mask id="clipping">
+              <polygon points="0,0 100,0 100,100 0,100" fill="black"></polygon>
+              <polygon points="25,25 75,25 50,75" fill="white"></polygon>
+              <polygon points="50,25 75,75 25,75" fill="white"></polygon>
+              <polygon points="35,35 65,35 50,65" fill="white"></polygon>
+              <polygon points="35,35 65,35 50,65" fill="white"></polygon>
+              <polygon points="35,35 65,35 50,65" fill="white"></polygon>
+              <polygon points="35,35 65,35 50,65" fill="white"></polygon>
+            </mask>
+          </defs>
+        </svg>
+        <div class="box"></div>
+      </div>
+      
+      <div class="wheel-and-hamster" id="hamster-logo" style="display: none; font-size: 6.33px;">
+        <div class="wheel"></div>
+        <div class="hamster">
+          <div class="hamster__body">
+            <div class="hamster__head">
+              <div class="hamster__ear"></div>
+              <div class="hamster__eye"></div>
+              <div class="hamster__nose"></div>
+            </div>
+            <div class="hamster__limb hamster__limb--fr"></div>
+            <div class="hamster__limb hamster__limb--fl"></div>
+            <div class="hamster__limb hamster__limb--br"></div>
+            <div class="hamster__limb hamster__limb--bl"></div>
+            <div class="hamster__tail"></div>
+          </div>
+        </div>
+        <div class="spoke"></div>
+      </div>
+      
+      <div class="neon-loader" id="neon-logo" style="display: none; transform: scale(0.95);">
+        <div class="circle"></div>
+      </div>
+    </div>
+
+    <!-- Mode Toggle -->
+    <div class="toggle-container fade-in">
+      <div class="toggle-pill">
+        <div class="toggle-slider-bg" id="toggle-highlight"></div>
+        <button class="toggle-option active" id="toggle-search" data-mode="search">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          Search
+        </button>
+        <button class="toggle-option" id="toggle-ai" data-mode="ai">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+          </svg>
+          Duck.ai
+        </button>
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container fade-in">
+      <div class="search-wrapper">
+        <input type="text" id="search-input" class="search-input" placeholder="Search privately" autocomplete="off"
+          autofocus>
+        <button id="search-clear-btn" class="search-clear-btn" aria-label="Clear Search" style="display: none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <button id="search-btn" class="search-icon-btn" aria-label="Search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+        <div id="suggestions-dropdown" class="suggestions-dropdown"></div>
+      </div>
+    </div>
+
+    <!-- Favourites -->
+    <section class="favourites-section fade-in-delay">
+      <div class="section-header">
+        <h2 class="section-title">Favourites</h2>
+        <button id="add-favourite-btn" class="add-btn" title="Add favourite">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Add
+        </button>
+      </div>
+      <div id="favourites-grid" class="sites-grid"></div>
+    </section>
+
+    <!-- Top Sites -->
+    <section class="top-sites-section fade-in-delay">
+      <h2 class="section-title">Frequently Visited</h2>
+      <div id="top-sites-grid" class="sites-grid"></div>
+    </section>
+
+    <!-- Quick Notes -->
+    <section class="notes-section fade-in-delay">
+      <div class="section-header">
+        <h2 class="section-title">Quick Notes</h2>
+      </div>
+      <div class="notes-container">
+        <div id="notes-list" class="notes-list"></div>
+        <form id="add-note-form" class="add-note-form">
+          <input type="text" id="new-note-input" class="new-note-input" placeholder="Add a new note..."
+            autocomplete="off">
+          <button type="submit" class="add-note-btn" aria-label="Add Note">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Daily Usage Insight -->
+    <div id="usage-insight" class="usage-insight fade-in-delay"></div>
+  </main>
+
+  <!-- ===== ADD FAVOURITE MODAL ===== -->
+  <div id="favourite-modal" class="modal-overlay" style="display:none; opacity:0; pointer-events:none;">
+    <div class="modal-card">
+      <h3 class="modal-title">Add Favourite</h3>
+      <label class="settings-label" for="fav-name-input">Name</label>
+      <input type="text" id="fav-name-input" class="settings-input" placeholder="e.g. YouTube" maxlength="24">
+      <label class="settings-label" for="fav-url-input">URL</label>
+      <input type="url" id="fav-url-input" class="settings-input" placeholder="https://example.com">
+      <div class="modal-actions">
+        <button id="fav-cancel-btn" class="modal-btn modal-btn-cancel">Cancel</button>
+        <button id="fav-save-btn" class="modal-btn modal-btn-save">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/suggestions.js"></script>
+  <script src="js/favourites.js"></script>
+  <script src="js/notes.js"></script>
+  <script src="js/usage.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

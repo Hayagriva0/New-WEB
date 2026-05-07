@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <radialGradient id="core-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff"/>
+      <stop offset="25%" stop-color="#fef08a"/>
+      <stop offset="60%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+  
+  <g transform="translate(60,60)">
+    <!-- Base deep orange aura -->
+    <circle cx="0" cy="0" r="48" fill="#78350f" opacity="0.4" filter="url(#glow)"/>
+
+    <!-- Spinning Sunburst Rays (Long) -->
+    <g stroke="#fcd34d" stroke-width="1.5" stroke-linecap="round" filter="url(#glow)">
+      <animateTransform attributeName="transform" type="rotate" values="0; 360" dur="20s" repeatCount="indefinite"/>
+      <!-- Generate 12 rays with SVG -->
+      <line x1="0" y1="-22" x2="0" y2="-48" />
+      <line x1="0" y1="-22" x2="0" y2="-48" transform="rotate(30)"/>
+      <line x1="0" y1="-22" x2="0" y2="-48" transform="rotate(60)"/>
+      <line x1="0" y1="-22" x2="0" y2="-48" transform="rotate(90)"/>
+      <line x1="0" y1="-22" x2="0" y2="-48" transform="rotate(120)"/>
+      <line x1="0" y1="-22" x2="0" y2="-48" transform="rotate(150)"/>
+      <line x1="0" y1="-22" x2="0" y2="-48" transform="rotate(180)"/>
+      <line x1="0" y1="-22" x2="0" y2="-48" transform="rotate(210)"/>
+      <line x1="0" y1="-22" x2="0" y2="-48" transform="rotate(240)"/>
+      <line x1="0" y1="-22" x2="0" y2="-48" transform="rotate(270)"/>
+      <line x1="0" y1="-22" x2="0" y2="-48" transform="rotate(300)"/>
+      <line x1="0" y1="-22" x2="0" y2="-48" transform="rotate(330)"/>
+    </g>
+
+    <!-- Spinning Sunburst Rays (Short, counter rotate) -->
+    <g stroke="#f59e0b" stroke-width="2" stroke-linecap="round" filter="url(#glow)" opacity="0.8">
+      <animateTransform attributeName="transform" type="rotate" values="360; 0" dur="15s" repeatCount="indefinite"/>
+      <line x1="0" y1="-18" x2="0" y2="-35" transform="rotate(15)"/>
+      <line x1="0" y1="-18" x2="0" y2="-35" transform="rotate(45)"/>
+      <line x1="0" y1="-18" x2="0" y2="-35" transform="rotate(75)"/>
+      <line x1="0" y1="-18" x2="0" y2="-35" transform="rotate(105)"/>
+      <line x1="0" y1="-18" x2="0" y2="-35" transform="rotate(135)"/>
+      <line x1="0" y1="-18" x2="0" y2="-35" transform="rotate(165)"/>
+      <line x1="0" y1="-18" x2="0" y2="-35" transform="rotate(195)"/>
+      <line x1="0" y1="-18" x2="0" y2="-35" transform="rotate(225)"/>
+      <line x1="0" y1="-18" x2="0" y2="-35" transform="rotate(255)"/>
+      <line x1="0" y1="-18" x2="0" y2="-35" transform="rotate(285)"/>
+      <line x1="0" y1="-18" x2="0" y2="-35" transform="rotate(315)"/>
+      <line x1="0" y1="-18" x2="0" y2="-35" transform="rotate(345)"/>
+    </g>
+
+    <!-- Expanding rings -->
+    <g fill="none" stroke="#fef08a" stroke-width="1.5">
+      <circle cx="0" cy="0" r="15">
+        <animate attributeName="r" values="15; 48" dur="2.5s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="1; 0" dur="2.5s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="0" cy="0" r="15">
+        <animate attributeName="r" values="15; 48" dur="2.5s" begin="1.25s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="1; 0" dur="2.5s" begin="1.25s" repeatCount="indefinite" />
+      </circle>
+    </g>
+
+    <!-- Pulsing Inner Core -->
+    <circle cx="0" cy="0" r="22" fill="url(#core-glow)">
+      <animate attributeName="r" values="22; 26; 22" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>

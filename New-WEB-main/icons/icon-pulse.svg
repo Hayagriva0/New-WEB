@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <radialGradient id="pulse-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="20%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0.2"/>
+    </radialGradient>
+    <radialGradient id="blob-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f472b6"/>
+      <stop offset="60%" stop-color="#8b5cf6" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <g transform="translate(60,60)">
+    <!-- Base dark blob -->
+    <path d="M45,0 C45,30 25,45 0,45 C-25,45 -45,30 -45,0 C-45,-30 -25,-45 0,-45 C25,-45 45,-30 45,0 Z" fill="url(#pulse-bg)" stroke="#38bdf8" stroke-width="1.5" filter="url(#glow)">
+      <animateTransform attributeName="transform" type="scale" values="0.9;1.1;0.9" dur="4s" repeatCount="indefinite" />
+      <animateTransform attributeName="transform" type="rotate" values="0; 360" dur="20s" repeatCount="indefinite" additive="sum"/>
+    </path>
+
+    <!-- Morphing Inner Nucli Blob 1 -->
+    <path d="M30,0 C30,20 15,30 0,30 C-15,30 -30,20 -30,0 C-30,-20 -15,-30 0,-30 C15,-30 30,-20 30,0 Z" fill="url(#blob-core)" opacity="0.7" filter="url(#glow)">
+       <animateTransform attributeName="transform" type="scale" values="0.8;1.2;0.8" dur="3s" repeatCount="indefinite" />
+       <animateTransform attributeName="transform" type="rotate" values="360; 0" dur="12s" repeatCount="indefinite" additive="sum"/>
+    </path>
+    <!-- Morphing Inner Nucli Blob 2 -->
+    <path d="M25,0 C25,18 10,25 0,25 C-10,25 -25,18 -25,0 C-25,-18 -10,-25 0,-25 C10,-25 25,-18 25,0 Z" fill="url(#blob-core)" opacity="0.9" filter="url(#glow)">
+       <animateTransform attributeName="transform" type="scale" values="1.2;0.8;1.2" dur="2.5s" repeatCount="indefinite" />
+       <animateTransform attributeName="transform" type="rotate" values="0; 360" dur="8s" repeatCount="indefinite" additive="sum"/>
+    </path>
+
+    <!-- Glowing Veins & Sparks -->
+    <g fill="none" stroke="#22d3ee" stroke-width="2.5" stroke-linecap="round" filter="url(#glow)">
+      <!-- Pulsing vein -->
+      <path d="M0,0 Q30,-20 45,-10" stroke-dasharray="15 30">
+        <animate attributeName="stroke-dashoffset" values="45;0" dur="1.8s" repeatCount="indefinite"/>
+      </path>
+      <path d="M0,0 Q-25,20 -35,35" stroke-dasharray="10 25">
+        <animate attributeName="stroke-dashoffset" values="35;0" dur="2.2s" repeatCount="indefinite"/>
+      </path>
+      <!-- Orbiting spark -->
+      <circle cx="38" cy="0" r="2.5" fill="#f472b6" stroke="none">
+        <animateTransform attributeName="transform" type="rotate" values="0; 360" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.2; 1; 0.2" dur="1.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="-42" cy="0" r="2" fill="#22d3ee" stroke="none">
+        <animateTransform attributeName="transform" type="rotate" values="180; 540" dur="4s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1; 0.2; 1" dur="2s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+
+    <!-- Core light -->
+    <circle cx="0" cy="0" r="10" fill="#fff" opacity="0.8" filter="url(#glow)">
+      <animate attributeName="r" values="8; 12; 8" dur="1s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>
