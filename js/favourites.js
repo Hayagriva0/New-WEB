@@ -137,6 +137,9 @@ var Favourites = (() => {
 
         if (favourites.length === 0) return;
 
+        /* Hue palette for unique icon backgrounds */
+        var HUES = [220, 260, 340, 160, 30, 190, 280, 10, 140, 50, 310, 200];
+
         for (var i = 0; i < favourites.length; i++) {
             (function (fav, idx) {
                 var card = document.createElement('a');
@@ -144,6 +147,12 @@ var Favourites = (() => {
                 card.className = 'site-card';
                 card.title = fav.name;
                 card.setAttribute('rel', 'noopener noreferrer');
+
+                /* Pixel-style icon wrap (squircle container) */
+                var iconWrap = document.createElement('div');
+                iconWrap.className = 'site-icon-wrap';
+                var hue = HUES[idx % HUES.length];
+                iconWrap.style.background = 'linear-gradient(135deg, hsla(' + hue + ', 50%, 50%, 0.08), hsla(' + ((hue + 60) % 360) + ', 40%, 45%, 0.04))';
 
                 var faviconSrc = getFaviconUrl(fav.url);
 
@@ -158,13 +167,12 @@ var Favourites = (() => {
                         fb.textContent = (fav.name || '?')[0].toUpperCase();
                         img.replaceWith(fb);
                     });
-                    card.appendChild(img);
+                    iconWrap.appendChild(img);
                 } else {
-                    /* Letter fallback when no favicon API available */
                     var fb = document.createElement('div');
                     fb.className = 'site-favicon-fallback';
                     fb.textContent = (fav.name || '?')[0].toUpperCase();
-                    card.appendChild(fb);
+                    iconWrap.appendChild(fb);
                 }
 
                 var label = document.createElement('span');
@@ -181,6 +189,7 @@ var Favourites = (() => {
                     remove(idx);
                 });
 
+                card.appendChild(iconWrap);
                 card.appendChild(label);
                 card.appendChild(removeBtn);
                 gridEl.appendChild(card);

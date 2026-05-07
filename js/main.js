@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var tabBtns = document.querySelectorAll('.settings-tab-btn');
         var tabPanes = document.querySelectorAll('.settings-tab-pane');
 
-        var CURRENT_VERSION = '4.0.0';
+        var CURRENT_VERSION = '5.0.0';
         var updateDot = document.getElementById('settings-update-dot');
         Storage.get('seenVersion').then(function (seenVersion) {
             if (seenVersion !== CURRENT_VERSION && updateDot) {
@@ -304,8 +304,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Logo Switching Logic
-        var currentLogo = 'icon.svg';
-        var VALID_LOGOS = ['icon.svg', 'icon-bloom.svg', 'icon-pulse.svg', 'icon-radiant.svg', 'icon-halo.svg', 'icon-vortex.svg'];
+        var currentLogo = 'hamster';
+        var VALID_LOGOS = ['icon.svg', 'icon-bloom.svg', 'icon-pulse.svg', 'icon-radiant.svg', 'icon-halo.svg', 'icon-vortex.svg', 'loader', 'hamster', 'neon'];
 
         function updateLogoCardsUI(activeLogo) {
             logoStyleCards.forEach(function (card) {
@@ -318,8 +318,32 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function applyLogoStyle(logoName) {
-            if (mainLogoImg && logoName) {
-                mainLogoImg.src = 'icons/' + logoName;
+            var loaderLogo = document.getElementById('loader-logo');
+            var hamsterLogo = document.getElementById('hamster-logo');
+            var neonLogo = document.getElementById('neon-logo');
+            if (logoName === 'loader') {
+                if (mainLogoImg) mainLogoImg.style.display = 'none';
+                if (loaderLogo) loaderLogo.style.display = 'block';
+                if (hamsterLogo) hamsterLogo.style.display = 'none';
+                if (neonLogo) neonLogo.style.display = 'none';
+            } else if (logoName === 'hamster') {
+                if (mainLogoImg) mainLogoImg.style.display = 'none';
+                if (loaderLogo) loaderLogo.style.display = 'none';
+                if (hamsterLogo) hamsterLogo.style.display = 'block';
+                if (neonLogo) neonLogo.style.display = 'none';
+            } else if (logoName === 'neon') {
+                if (mainLogoImg) mainLogoImg.style.display = 'none';
+                if (loaderLogo) loaderLogo.style.display = 'none';
+                if (hamsterLogo) hamsterLogo.style.display = 'none';
+                if (neonLogo) neonLogo.style.display = 'flex';
+            } else {
+                if (mainLogoImg && logoName) {
+                    mainLogoImg.style.display = '';
+                    mainLogoImg.src = 'icons/' + logoName;
+                }
+                if (loaderLogo) loaderLogo.style.display = 'none';
+                if (hamsterLogo) hamsterLogo.style.display = 'none';
+                if (neonLogo) neonLogo.style.display = 'none';
             }
         }
 
@@ -337,6 +361,44 @@ document.addEventListener('DOMContentLoaded', function () {
                 Storage.set('logoStyle', currentLogo).catch(function () { });
                 updateLogoCardsUI(currentLogo);
                 applyLogoStyle(currentLogo);
+            });
+        });
+
+        // Icon Shape Picker Logic
+        var iconShapeBtns = document.querySelectorAll('.icon-shape-btn');
+        var VALID_SHAPES = ['squircle', 'circle', 'rounded', 'blob', 'pebble', 'square'];
+        var currentShape = 'squircle';
+
+        function updateShapeUI(activeShape) {
+            iconShapeBtns.forEach(function (btn) {
+                if (btn.dataset.shape === activeShape) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.remove('selected');
+                }
+            });
+        }
+
+        function applyIconShape(shape) {
+            document.body.setAttribute('data-icon-shape', shape);
+        }
+
+        Storage.get('iconShape').then(function (val) {
+            if (val && VALID_SHAPES.indexOf(val) !== -1) {
+                currentShape = val;
+            }
+            updateShapeUI(currentShape);
+            applyIconShape(currentShape);
+        }).catch(function () {
+            applyIconShape(currentShape);
+        });
+
+        iconShapeBtns.forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                currentShape = e.currentTarget.dataset.shape;
+                Storage.set('iconShape', currentShape).catch(function () { });
+                updateShapeUI(currentShape);
+                applyIconShape(currentShape);
             });
         });
 
@@ -839,4 +901,14 @@ document.addEventListener('DOMContentLoaded', function () {
     } catch (err) {
         console.error('[New WEB] Reset settings init failed:', err);
     }
+    /* -------------------------------------------------------
+     * REVEAL: Remove loading state to show the page.
+     * Wait a tick for async Storage.get() calls above to
+     * resolve and apply their UI changes before revealing.
+     * chrome.storage.local reads resolve in < 5ms, so
+     * 50ms is more than enough while staying imperceptible.
+     * ------------------------------------------------------- */
+    setTimeout(function () {
+        document.documentElement.classList.remove('not-ready');
+    }, 50);
 });

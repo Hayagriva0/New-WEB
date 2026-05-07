@@ -63,13 +63,24 @@ var Weather = (() => {
             if (!isValidCoords(lat, lon)) return null;
 
             var url = API_BASE + '?latitude=' + lat + '&longitude=' + lon +
-                '&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m' +
+                '&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m,apparent_temperature,surface_pressure' +
                 '&daily=temperature_2m_max,temperature_2m_min' +
                 '&timezone=auto&forecast_days=1';
 
             var response = await fetch(url);
             if (!response.ok) return null;
             var data = await response.json();
+            
+            var aqi = 30; // default good
+            try {
+                var aqiResponse = await fetch('https://air-quality-api.open-meteo.com/v1/air-quality?latitude=' + lat + '&longitude=' + lon + '&current=us_aqi');
+                if (aqiResponse.ok) {
+                    var aqiData = await aqiResponse.json();
+                    if (aqiData && aqiData.current && aqiData.current.us_aqi) {
+                        aqi = aqiData.current.us_aqi;
+                    }
+                }
+            } catch(e) {}
 
             /* Validate response shape */
             if (!data || !data.current || typeof data.current.temperature_2m !== 'number') {
@@ -87,6 +98,9 @@ var Weather = (() => {
                 desc: weatherInfo.desc,
                 humidity: current.relative_humidity_2m,
                 wind: Math.round(current.wind_speed_10m || 0),
+                realFeel: Math.round(current.apparent_temperature || current.temperature_2m),
+                pressure: Math.round(current.surface_pressure || 1012),
+                aqi: aqi,
                 high: (daily && Array.isArray(daily.temperature_2m_max) && daily.temperature_2m_max.length > 0)
                     ? Math.round(daily.temperature_2m_max[0]) : null,
                 low: (daily && Array.isArray(daily.temperature_2m_min) && daily.temperature_2m_min.length > 0)
@@ -156,15 +170,43 @@ var Weather = (() => {
                 return;
             }
 
-            document.getElementById('weather-icon').textContent = data.icon;
-            document.getElementById('weather-temp').textContent = data.temp + '°C';
-            document.getElementById('weather-desc').textContent = data.desc;
-            document.getElementById('weather-city').textContent = cityName || 'Your Location';
+            var tempEl = document.getElementById('weather-temp');
+            if (tempEl) tempEl.textContent = data.temp + '°C';
+            
+            var cityEl = document.getElementById('weather-city');
+            if (cityEl) cityEl.textContent = cityName || 'Your Location';
 
             /* Fill extra details if elements exist */
-            var hiLo = document.getElementById('weather-hilo');
-            if (hiLo && data.high !== null) {
-                hiLo.textContent = 'H:' + data.high + '° L:' + data.low + '°';
+            var humEl = document.getElementById('weather-humidity');
+            if (humEl) humEl.textContent = data.humidity + '%';
+            
+            var windEl = document.getElementById('weather-wind');
+            if (windEl) windEl.textContent = data.wind + ' Km/h';
+            
+            var aqiEl = document.getElementById('weather-aqi');
+            if (aqiEl) aqiEl.textContent = data.aqi;
+            
+            var realFeelEl = document.getElementById('weather-realfeel');
+            if (realFeelEl) realFeelEl.textContent = data.realFeel + '°C';
+            
+            var pressureEl = document.getElementById('weather-pressure');
+            if (pressureEl) pressureEl.textContent = data.pressure + ' mbar';
+            
+            var statusBar = document.getElementById('weather-status-bar');
+            if (statusBar) {
+                if (data.aqi <= 50) {
+                    statusBar.textContent = 'Healthy';
+                    statusBar.style.background = '#11d8d8';
+                    statusBar.style.color = '#0b1522';
+                } else if (data.aqi <= 100) {
+                    statusBar.textContent = 'Moderate';
+                    statusBar.style.background = '#ffd166';
+                    statusBar.style.color = '#0b1522';
+                } else {
+                    statusBar.textContent = 'Unhealthy';
+                    statusBar.style.background = '#ef476f';
+                    statusBar.style.color = '#fff';
+                }
             }
 
             widget.classList.remove('hidden');

@@ -224,6 +224,7 @@
 
 html {
   height: 100%;
+  background: var(--bg);
 }
 
 body {
@@ -233,6 +234,10 @@ body {
   font-family: var(--font);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+html.not-ready body {
+  visibility: hidden;
 }
 
 /* Ambient gradient */
@@ -316,68 +321,272 @@ body.wallpaper-active::after {
 
 /* ===== WEATHER WIDGET ===== */
 .weather-widget {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 14px;
-  background: rgba(255, 255, 255, 0.02);
+  position: relative;
+  width: 140px;
+  height: 48px;
+  background: transparent;
+  z-index: 60;
+  cursor: pointer;
+}
+
+.weather-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 140px;
+  height: 48px;
+  background: var(--bg-glass);
   border: 1px solid var(--border);
   border-radius: var(--r-xl);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   backdrop-filter: blur(24px) saturate(180%);
-  cursor: pointer;
-  transition: transform var(--ease), background var(--ease), border-color var(--ease);
-}
-
-.weather-widget:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: var(--border-hover);
-  transform: translateY(-1px);
-}
-
-.weather-emoji {
-  font-size: 24px;
-  line-height: 1;
-}
-
-.weather-details {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.weather-main {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.weather-temp {
-  font-size: 15px;
-  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  font-family: var(--font-primary, system-ui, -apple-system, sans-serif);
   color: var(--text-1);
 }
 
-.weather-desc {
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--text-2);
+.weather-widget:hover .weather-card {
+  width: 250px;
+  height: 290px;
+  background: var(--bg-glass);
+  border-color: var(--border-hover);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.3);
 }
 
-.weather-sub {
+.weather-main-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 48px;
   display: flex;
-  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  box-sizing: border-box;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 3;
 }
 
-.weather-city {
-  font-size: 11px;
-  color: var(--text-3);
-  letter-spacing: 0.02em;
+.weather-widget:hover .weather-main-panel {
+  top: 80px;
+  height: 100px;
+  padding: 0 25px;
+  background: rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.weather-hilo {
-  font-size: 11px;
+.weather-top-details {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.weather-widget:hover .weather-top-details {
+  opacity: 1;
+  transition-delay: 0.1s;
+  pointer-events: auto;
+}
+
+.weather-bottom-details {
+  position: absolute;
+  top: 180px;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 10px;
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.weather-widget:hover .weather-bottom-details {
+  opacity: 1;
+  transition-delay: 0.2s;
+  pointer-events: auto;
+}
+
+.detail-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.detail-box svg {
+  stroke: var(--text-2);
+  width: 20px;
+  height: 20px;
+}
+
+.detail-text {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-label {
+  font-size: 10px;
   color: var(--text-3);
+  font-weight: 500;
+}
+
+.detail-val {
+  font-size: 12px;
+  color: var(--text-1);
+  font-weight: 600;
+}
+
+.weather-status-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background: var(--primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+
+.weather-widget:hover .weather-status-bar {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.3s;
+}
+
+.weather-graphics {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  transform: scale(0.5) translateX(-30%);
+  transform-origin: center left;
+  transition: all 0.4s ease;
+}
+
+.weather-widget:hover .weather-graphics {
+  transform: scale(1) translateX(0);
+}
+
+.weather-graphics .sun {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 45px;
+  height: 45px;
+  background: #ffb703;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(255, 183, 3, 0.4);
+  animation: float-sun 4s ease-in-out infinite;
+}
+
+.weather-graphics .cloud {
+  position: absolute;
+  bottom: 5px;
+  right: -5px;
+  width: 45px;
+  height: 25px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  animation: float-cloud 5s ease-in-out infinite alternate;
+}
+
+.weather-graphics .cloud::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 8px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.weather-graphics .cloud::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: 6px;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+@keyframes float-sun {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes float-cloud {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(4px); }
+}
+
+.weather-info {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: all 0.4s ease;
+}
+
+.weather-info .temp {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: 2px;
+  transition: all 0.4s ease;
+  color: var(--text-1);
+}
+
+.weather-widget:hover .weather-info .temp {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.weather-info .city {
+  font-size: 11px;
+  color: var(--text-2);
+  font-weight: 500;
+  white-space: nowrap;
+  max-width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.4s ease;
+}
+
+.weather-widget:hover .weather-info .city {
+  max-width: 120px;
+  color: var(--text-2);
 }
 
 /* ===== SETTINGS BUTTON ===== */
@@ -388,9 +597,11 @@ body.wallpaper-active::after {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  color: var(--text-3);
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-hover);
+  color: var(--text-1);
   cursor: pointer;
   transition: all var(--ease);
   position: relative;
@@ -1331,6 +1542,79 @@ body.wallpaper-active::after {
   color: var(--text-1);
 }
 
+/* ===== ICON SHAPE PICKER ===== */
+.icon-shape-picker {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 4px;
+}
+
+.icon-shape-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 8px 10px;
+  border-radius: var(--r-md);
+  background: var(--bg-hover);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--ease);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.icon-shape-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.icon-shape-btn.selected {
+  border-color: var(--accent);
+  background: rgba(100, 140, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(100, 140, 255, 0.2);
+}
+
+.icon-shape-preview {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, rgba(100, 140, 255, 0.3), rgba(168, 85, 247, 0.2));
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.icon-shape-btn:hover .icon-shape-preview {
+  transform: scale(1.12);
+}
+
+.icon-shape-btn span {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-3);
+  pointer-events: none;
+  transition: color var(--ease);
+}
+
+.icon-shape-btn.selected span {
+  color: var(--text-1);
+}
+
+/* Shape previews */
+.shape-squircle { border-radius: 28%; }
+.shape-circle { border-radius: 50%; }
+.shape-rounded { border-radius: 22%; }
+.shape-blob { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+.shape-pebble { border-radius: 50% 50% 42% 58% / 58% 42% 58% 42%; }
+.shape-square { border-radius: 14%; }
+
+/* ===== ICON SHAPE VARIANTS (applied via data-icon-shape on body) ===== */
+[data-icon-shape="squircle"] .site-icon-wrap { border-radius: 16px; }
+[data-icon-shape="circle"] .site-icon-wrap { border-radius: 50%; }
+[data-icon-shape="rounded"] .site-icon-wrap { border-radius: 12px; }
+[data-icon-shape="blob"] .site-icon-wrap { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+[data-icon-shape="pebble"] .site-icon-wrap { border-radius: 50% 50% 42% 58% / 58% 42% 58% 42%; }
+[data-icon-shape="square"] .site-icon-wrap { border-radius: 8px; }
 
 .greeting {
   font-size: 18px;
@@ -1742,93 +2026,184 @@ body.wallpaper-active::after {
   color: var(--accent-light);
 }
 
-/* ===== SITES GRID ===== */
+/* ===== SITES GRID (Pixel Themed Icons) ===== */
 .sites-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
+  gap: 10px;
 }
 
 .site-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 14px 6px 12px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
+  gap: 10px;
+  padding: 12px 6px 10px;
   cursor: pointer;
   text-decoration: none;
-  transition: all var(--ease);
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), opacity var(--ease);
   position: relative;
-  overflow: hidden;
+  border-radius: var(--r-lg);
+  background: transparent;
+  border: none;
 }
 
 .site-card:hover {
-  background: var(--bg-hover);
-  border-color: var(--border-hover);
-  transform: translateY(-4px);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+  transform: translateY(-3px) scale(1.04);
 }
 
-.site-favicon {
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
-  object-fit: contain;
+.site-card:active {
+  transform: scale(0.96);
+  transition-duration: 0.1s;
 }
 
-.site-favicon-fallback {
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
-  background: linear-gradient(135deg, rgba(100, 140, 255, 0.15), rgba(168, 85, 247, 0.1));
+/* --- Pixel-style icon container (squircle) --- */
+.site-icon-wrap {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
-  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.site-card:hover .site-icon-wrap {
+  border-color: var(--border-hover);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--border-hover);
+  transform: scale(1.06);
+}
+
+/* Subtle themed bg glow inside the icon */
+.site-icon-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 30% 30%, rgba(100, 140, 255, 0.08), rgba(168, 85, 247, 0.04) 60%, transparent);
+  opacity: 0.7;
+  transition: opacity var(--ease);
+}
+
+.site-card:hover .site-icon-wrap::before {
+  opacity: 1;
+}
+
+.site-favicon {
+  position: relative;
+  z-index: 1;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.site-card:hover .site-favicon {
+  transform: scale(1.08);
+}
+
+.site-favicon-fallback {
+  position: relative;
+  z-index: 1;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, rgba(100, 140, 255, 0.25), rgba(168, 85, 247, 0.18));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--accent-light);
+  letter-spacing: -0.02em;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.site-card:hover .site-favicon-fallback {
+  transform: scale(1.08);
 }
 
 .site-label {
-  font-size: 10px;
-  font-weight: 400;
-  color: var(--text-2);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-3);
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 68px;
+  max-width: 76px;
+  transition: color var(--ease);
+  line-height: 1.2;
 }
 
+.site-card:hover .site-label {
+  color: var(--text-1);
+}
+
+/* --- Remove button (floating pill) --- */
 .site-remove-btn {
   position: absolute;
-  top: 3px;
-  right: 3px;
-  width: 18px;
-  height: 18px;
+  top: 4px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: rgba(255, 69, 58, 0.15);
-  border: 1px solid rgba(255, 69, 58, 0.2);
-  color: var(--danger);
+  background: rgba(255, 69, 58, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
   font-size: 12px;
+  font-weight: 600;
   line-height: 1;
   cursor: pointer;
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--ease);
-  z-index: 2;
+  transition: all 0.2s ease;
+  z-index: 3;
+  opacity: 0;
+  transform: scale(0.6);
+  pointer-events: none;
 }
 
 .site-card:hover .site-remove-btn {
-  display: flex;
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
 }
 
 .site-remove-btn:hover {
-  background: rgba(255, 69, 58, 0.3);
+  background: rgba(255, 69, 58, 1);
+  transform: scale(1.15);
+  box-shadow: 0 2px 8px rgba(255, 69, 58, 0.4);
+}
+
+/* Per-card color accents are applied inline via JS on .site-icon-wrap */
+
+/* Light theme adjustments */
+[data-theme="light"] .site-icon-wrap {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .site-card:hover .site-icon-wrap {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .site-icon-wrap::before {
+  background: radial-gradient(circle at 30% 30%, rgba(100, 140, 255, 0.06), rgba(168, 85, 247, 0.03) 60%, transparent);
+}
+
+[data-theme="light"] .site-favicon-fallback {
+  background: linear-gradient(135deg, rgba(100, 140, 255, 0.15), rgba(168, 85, 247, 0.1));
 }
 
 /* ===== MODAL ===== */
@@ -2274,6 +2649,472 @@ body.wallpaper-active::after {
   }
 
   .sites-grid {
-    grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+    gap: 8px;
+  }
+}
+
+/* From Uiverse.io by andrew-manzyk */ 
+.loader {
+  --color-one: #ffbf48;
+  --color-two: #be4a1d;
+  --color-three: #ffbf4780;
+  --color-four: #bf4a1d80;
+  --color-five: #ffbf4740;
+  --time-animation: 2s;
+  --size: 1; /* You can change the size */
+  position: relative;
+  border-radius: 50%;
+  transform: scale(var(--size));
+  box-shadow:
+    0 0 25px 0 var(--color-three),
+    0 20px 50px 0 var(--color-four);
+  animation: colorize calc(var(--time-animation) * 3) ease-in-out infinite;
+}
+
+.loader::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border-top: solid 1px var(--color-one);
+  border-bottom: solid 1px var(--color-two);
+  background: linear-gradient(180deg, var(--color-five), var(--color-four));
+  box-shadow:
+    inset 0 10px 10px 0 var(--color-three),
+    inset 0 -10px 10px 0 var(--color-four);
+}
+
+.loader .box {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(
+    180deg,
+    var(--color-one) 30%,
+    var(--color-two) 70%
+  );
+  mask: url(#clipping);
+  -webkit-mask: url(#clipping);
+}
+
+.loader svg {
+  position: absolute;
+}
+
+.loader svg #clipping {
+  filter: contrast(15);
+  animation: roundness calc(var(--time-animation) / 2) linear infinite;
+}
+
+.loader svg #clipping polygon {
+  filter: blur(7px);
+}
+
+.loader svg #clipping polygon:nth-child(1) {
+  transform-origin: 75% 25%;
+  transform: rotate(90deg);
+}
+
+.loader svg #clipping polygon:nth-child(2) {
+  transform-origin: 50% 50%;
+  animation: rotation var(--time-animation) linear infinite reverse;
+}
+
+.loader svg #clipping polygon:nth-child(3) {
+  transform-origin: 50% 60%;
+  animation: rotation var(--time-animation) linear infinite;
+  animation-delay: calc(var(--time-animation) / -3);
+}
+
+.loader svg #clipping polygon:nth-child(4) {
+  transform-origin: 40% 40%;
+  animation: rotation var(--time-animation) linear infinite reverse;
+}
+
+.loader svg #clipping polygon:nth-child(5) {
+  transform-origin: 40% 40%;
+  animation: rotation var(--time-animation) linear infinite reverse;
+  animation-delay: calc(var(--time-animation) / -2);
+}
+
+.loader svg #clipping polygon:nth-child(6) {
+  transform-origin: 60% 40%;
+  animation: rotation var(--time-animation) linear infinite;
+}
+
+.loader svg #clipping polygon:nth-child(7) {
+  transform-origin: 60% 40%;
+  animation: rotation var(--time-animation) linear infinite;
+  animation-delay: calc(var(--time-animation) / -1.5);
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes roundness {
+  0% {
+    filter: contrast(15);
+  }
+  20% {
+    filter: contrast(3);
+  }
+  40% {
+    filter: contrast(3);
+  }
+  60% {
+    filter: contrast(15);
+  }
+  100% {
+    filter: contrast(15);
+  }
+}
+
+@keyframes colorize {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    filter: hue-rotate(-30deg);
+  }
+  40% {
+    filter: hue-rotate(-60deg);
+  }
+  60% {
+    filter: hue-rotate(-90deg);
+  }
+  80% {
+    filter: hue-rotate(-45deg);
+  }
+  100% {
+    filter: hue-rotate(0deg);
+  }
+}
+
+/* Hamster Loader CSS */
+.wheel-and-hamster {
+  --dur: 1s;
+  position: relative;
+  width: 12em;
+  height: 12em;
+  font-size: 14px;
+}
+
+.wheel,
+.hamster,
+.hamster div,
+.spoke {
+  position: absolute;
+}
+
+.wheel,
+.spoke {
+  border-radius: 50%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.wheel {
+  background: radial-gradient(100% 100% at center,hsla(0,0%,60%,0) 47.8%,hsl(0,0%,60%) 48%);
+  z-index: 2;
+}
+
+.hamster {
+  animation: hamster var(--dur) ease-in-out infinite;
+  top: 50%;
+  left: calc(50% - 3.5em);
+  width: 7em;
+  height: 3.75em;
+  transform: rotate(4deg) translate(-0.8em,1.85em);
+  transform-origin: 50% 0;
+  z-index: 1;
+}
+
+.hamster__head {
+  animation: hamsterHead var(--dur) ease-in-out infinite;
+  background: hsl(30,90%,55%);
+  border-radius: 70% 30% 0 100% / 40% 25% 25% 60%;
+  box-shadow: 0 -0.25em 0 hsl(30,90%,80%) inset,
+		0.75em -1.55em 0 hsl(30,90%,90%) inset;
+  top: 0;
+  left: -2em;
+  width: 2.75em;
+  height: 2.5em;
+  transform-origin: 100% 50%;
+}
+
+.hamster__ear {
+  animation: hamsterEar var(--dur) ease-in-out infinite;
+  background: hsl(0,90%,85%);
+  border-radius: 50%;
+  box-shadow: -0.25em 0 hsl(30,90%,55%) inset;
+  top: -0.25em;
+  right: -0.25em;
+  width: 0.75em;
+  height: 0.75em;
+  transform-origin: 50% 75%;
+}
+
+.hamster__eye {
+  animation: hamsterEye var(--dur) linear infinite;
+  background-color: hsl(0,0%,0%);
+  border-radius: 50%;
+  top: 0.375em;
+  left: 1.25em;
+  width: 0.5em;
+  height: 0.5em;
+}
+
+.hamster__nose {
+  background: hsl(0,90%,75%);
+  border-radius: 35% 65% 85% 15% / 70% 50% 50% 30%;
+  top: 0.75em;
+  left: 0;
+  width: 0.2em;
+  height: 0.25em;
+}
+
+.hamster__body {
+  animation: hamsterBody var(--dur) ease-in-out infinite;
+  background: hsl(30,90%,90%);
+  border-radius: 50% 30% 50% 30% / 15% 60% 40% 40%;
+  box-shadow: 0.1em 0.75em 0 hsl(30,90%,55%) inset,
+		0.15em -0.5em 0 hsl(30,90%,80%) inset;
+  top: 0.25em;
+  left: 2em;
+  width: 4.5em;
+  height: 3em;
+  transform-origin: 17% 50%;
+  transform-style: preserve-3d;
+}
+
+.hamster__limb--fr,
+.hamster__limb--fl {
+  clip-path: polygon(0 0,100% 0,70% 80%,60% 100%,0% 100%,40% 80%);
+  top: 2em;
+  left: 0.5em;
+  width: 1em;
+  height: 1.5em;
+  transform-origin: 50% 0;
+}
+
+.hamster__limb--fr {
+  animation: hamsterFRLimb var(--dur) linear infinite;
+  background: linear-gradient(hsl(30,90%,80%) 80%,hsl(0,90%,75%) 80%);
+  transform: rotate(15deg) translateZ(-1px);
+}
+
+.hamster__limb--fl {
+  animation: hamsterFLLimb var(--dur) linear infinite;
+  background: linear-gradient(hsl(30,90%,90%) 80%,hsl(0,90%,85%) 80%);
+  transform: rotate(15deg);
+}
+
+.hamster__limb--br,
+.hamster__limb--bl {
+  border-radius: 0.75em 0.75em 0 0;
+  clip-path: polygon(0 0,100% 0,100% 30%,70% 90%,70% 100%,30% 100%,40% 90%,0% 30%);
+  top: 1em;
+  left: 2.8em;
+  width: 1.5em;
+  height: 2.5em;
+  transform-origin: 50% 30%;
+}
+
+.hamster__limb--br {
+  animation: hamsterBRLimb var(--dur) linear infinite;
+  background: linear-gradient(hsl(30,90%,80%) 90%,hsl(0,90%,75%) 90%);
+  transform: rotate(-25deg) translateZ(-1px);
+}
+
+.hamster__limb--bl {
+  animation: hamsterBLLimb var(--dur) linear infinite;
+  background: linear-gradient(hsl(30,90%,90%) 90%,hsl(0,90%,85%) 90%);
+  transform: rotate(-25deg);
+}
+
+.hamster__tail {
+  animation: hamsterTail var(--dur) linear infinite;
+  background: hsl(0,90%,85%);
+  border-radius: 0.25em 50% 50% 0.25em;
+  box-shadow: 0 -0.2em 0 hsl(0,90%,75%) inset;
+  top: 1.5em;
+  right: -0.5em;
+  width: 1em;
+  height: 0.5em;
+  transform: rotate(30deg) translateZ(-1px);
+  transform-origin: 0.25em 0.25em;
+}
+
+.spoke {
+  animation: spoke var(--dur) linear infinite;
+  background: radial-gradient(100% 100% at center,hsl(0,0%,60%) 4.8%,hsla(0,0%,60%,0) 5%),
+		linear-gradient(hsla(0,0%,55%,0) 46.9%,hsl(0,0%,65%) 47% 52.9%,hsla(0,0%,65%,0) 53%) 50% 50% / 99% 99% no-repeat;
+}
+
+/* Animations */
+@keyframes hamster {
+  from, to {
+    transform: rotate(4deg) translate(-0.8em,1.85em);
+  }
+
+  50% {
+    transform: rotate(0) translate(-0.8em,1.85em);
+  }
+}
+
+@keyframes hamsterHead {
+  from, 25%, 50%, 75%, to {
+    transform: rotate(0);
+  }
+
+  12.5%, 37.5%, 62.5%, 87.5% {
+    transform: rotate(8deg);
+  }
+}
+
+@keyframes hamsterEye {
+  from, 90%, to {
+    transform: scaleY(1);
+  }
+
+  95% {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes hamsterEar {
+  from, 25%, 50%, 75%, to {
+    transform: rotate(0);
+  }
+
+  12.5%, 37.5%, 62.5%, 87.5% {
+    transform: rotate(12deg);
+  }
+}
+
+@keyframes hamsterBody {
+  from, 25%, 50%, 75%, to {
+    transform: rotate(0);
+  }
+
+  12.5%, 37.5%, 62.5%, 87.5% {
+    transform: rotate(-2deg);
+  }
+}
+
+@keyframes hamsterFRLimb {
+  from, 25%, 50%, 75%, to {
+    transform: rotate(50deg) translateZ(-1px);
+  }
+
+  12.5%, 37.5%, 62.5%, 87.5% {
+    transform: rotate(-30deg) translateZ(-1px);
+  }
+}
+
+@keyframes hamsterFLLimb {
+  from, 25%, 50%, 75%, to {
+    transform: rotate(-30deg);
+  }
+
+  12.5%, 37.5%, 62.5%, 87.5% {
+    transform: rotate(50deg);
+  }
+}
+
+@keyframes hamsterBRLimb {
+  from, 25%, 50%, 75%, to {
+    transform: rotate(-60deg) translateZ(-1px);
+  }
+
+  12.5%, 37.5%, 62.5%, 87.5% {
+    transform: rotate(20deg) translateZ(-1px);
+  }
+}
+
+@keyframes hamsterBLLimb {
+  from, 25%, 50%, 75%, to {
+    transform: rotate(20deg);
+  }
+
+  12.5%, 37.5%, 62.5%, 87.5% {
+    transform: rotate(-60deg);
+  }
+}
+
+@keyframes hamsterTail {
+  from, 25%, 50%, 75%, to {
+    transform: rotate(30deg) translateZ(-1px);
+  }
+
+  12.5%, 37.5%, 62.5%, 87.5% {
+    transform: rotate(10deg) translateZ(-1px);
+  }
+}
+
+@keyframes spoke {
+  from {
+    transform: rotate(0);
+  }
+
+  to {
+    transform: rotate(-1turn);
+  }
+}
+
+/* Neon Loader CSS */
+.neon-loader {
+  background: transparent;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.neon-loader .circle {
+  width: 80px;
+  height: 80px;
+  border: 2px solid #ccc;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  animation: neon-circle 2s linear infinite;
+}
+
+.neon-loader .circle::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #9ae932;
+  box-shadow: 0 0 20px #9ae932, 0 0 60px #9ae932;
+}
+
+@keyframes neon-circle {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }

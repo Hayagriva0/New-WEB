@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="background:#000">
 
 <head>
   <meta charset="UTF-8">
@@ -20,16 +20,74 @@
   <div class="top-bar">
     <!-- Weather Widget (left) -->
     <div id="weather-widget" class="weather-widget hidden">
-      <span id="weather-icon" class="weather-emoji"></span>
-      <div class="weather-details">
-        <div class="weather-main">
-          <span id="weather-temp" class="weather-temp"></span>
-          <span id="weather-desc" class="weather-desc"></span>
+      <div class="weather-card">
+        <!-- Top Details -->
+        <div class="weather-top-details">
+          <div class="detail-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#11d8d8" stroke-width="2" width="20" height="20">
+              <path d="M12 22C16.4183 22 20 18.4183 20 14C20 9.58172 12 2 12 2C12 2 4 9.58172 4 14C4 18.4183 7.58172 22 12 22Z" />
+            </svg>
+            <div class="detail-text">
+              <span class="detail-label">Humidity</span>
+              <span class="detail-val" id="weather-humidity">--%</span>
+            </div>
+          </div>
+          <div class="detail-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#11d8d8" stroke-width="2" width="20" height="20">
+              <path d="M4 12H16M4 8H12M4 16H20M16 12C16 10.8954 16.8954 10 18 10C19.1046 10 20 10.8954 20 12C20 13.1046 19.1046 14 18 14H16M20 16C20 14.8954 20.8954 14 22 14C23.1046 14 24 14.8954 24 16C24 17.1046 23.1046 18 22 18H20" />
+            </svg>
+            <div class="detail-text">
+              <span class="detail-label">Wind</span>
+              <span class="detail-val" id="weather-wind">-- Km/h</span>
+            </div>
+          </div>
         </div>
-        <div class="weather-sub">
-          <span id="weather-city" class="weather-city"></span>
-          <span id="weather-hilo" class="weather-hilo"></span>
+
+        <!-- Main Panel -->
+        <div class="weather-main-panel">
+          <div class="weather-graphics">
+            <div class="sun"></div>
+            <div class="cloud"></div>
+          </div>
+          <div class="weather-info">
+            <div class="temp"><span id="weather-temp">--°C</span></div>
+            <div class="city" id="weather-city">Loading...</div>
+          </div>
         </div>
+
+        <!-- Bottom Details -->
+        <div class="weather-bottom-details">
+          <div class="detail-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#11d8d8" stroke-width="2" width="16" height="16">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <div class="detail-text">
+              <span class="detail-label">AQI</span>
+              <span class="detail-val" id="weather-aqi">--</span>
+            </div>
+          </div>
+          <div class="detail-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#11d8d8" stroke-width="2" width="16" height="16">
+              <path d="M12 9v2m0 4v.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <div class="detail-text">
+              <span class="detail-label">Real Feel</span>
+              <span class="detail-val" id="weather-realfeel">--°C</span>
+            </div>
+          </div>
+          <div class="detail-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#11d8d8" stroke-width="2" width="16" height="16">
+              <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>
+            </svg>
+            <div class="detail-text">
+              <span class="detail-label">Pressure</span>
+              <span class="detail-val" id="weather-pressure">-- mbar</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="weather-status-bar" id="weather-status-bar">Healthy</div>
       </div>
     </div>
 
@@ -175,7 +233,7 @@
         </div>
 
         <div class="settings-version">
-          <span>New WEB v4.0.0</span>
+          <span>New WEB v4.0.1</span>
           <span class="settings-version-sub">Privacy-focused new tab</span>
         </div>
       </div>
@@ -307,6 +365,81 @@
                 <img src="icons/icon-vortex.svg" width="36" height="36" alt="">
                 <span>Vortex</span>
               </button>
+              <button class="logo-style-btn" data-logo="loader" aria-label="Loader">
+                <div style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+                  <div class="loader" style="--size: 0.36;">
+                    <div class="box" style="mask: url(#clipping); -webkit-mask: url(#clipping);"></div>
+                  </div>
+                </div>
+                <span>Loader</span>
+              </button>
+              <button class="logo-style-btn" data-logo="hamster" aria-label="Hamster">
+                <div style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+                  <div class="wheel-and-hamster" style="font-size: 3px;">
+                    <div class="wheel"></div>
+                    <div class="hamster">
+                      <div class="hamster__body">
+                        <div class="hamster__head">
+                          <div class="hamster__ear"></div>
+                          <div class="hamster__eye"></div>
+                          <div class="hamster__nose"></div>
+                        </div>
+                        <div class="hamster__limb hamster__limb--fr"></div>
+                        <div class="hamster__limb hamster__limb--fl"></div>
+                        <div class="hamster__limb hamster__limb--br"></div>
+                        <div class="hamster__limb hamster__limb--bl"></div>
+                        <div class="hamster__tail"></div>
+                      </div>
+                    </div>
+                    <div class="spoke"></div>
+                  </div>
+                </div>
+                <span>Hamster</span>
+              </button>
+              <button class="logo-style-btn" data-logo="neon" aria-label="Neon">
+                <div style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+                  <div class="neon-loader" style="transform: scale(0.45);">
+                    <div class="circle"></div>
+                  </div>
+                </div>
+                <span>Neon</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label class="settings-label">
+            Icon Shape
+            <span class="badge-new">NEW</span>
+          </label>
+          <p class="settings-group-hint">Choose a shape for favourite icons</p>
+          <div class="settings-group-content">
+            <div class="icon-shape-picker" id="icon-shape-container">
+              <button class="icon-shape-btn selected" data-shape="squircle" aria-label="Squircle" title="Squircle">
+                <div class="icon-shape-preview shape-squircle"></div>
+                <span>Squircle</span>
+              </button>
+              <button class="icon-shape-btn" data-shape="circle" aria-label="Circle" title="Circle">
+                <div class="icon-shape-preview shape-circle"></div>
+                <span>Circle</span>
+              </button>
+              <button class="icon-shape-btn" data-shape="rounded" aria-label="Rounded" title="Rounded">
+                <div class="icon-shape-preview shape-rounded"></div>
+                <span>Rounded</span>
+              </button>
+              <button class="icon-shape-btn" data-shape="blob" aria-label="Blob" title="Blob">
+                <div class="icon-shape-preview shape-blob"></div>
+                <span>Blob</span>
+              </button>
+              <button class="icon-shape-btn" data-shape="pebble" aria-label="Pebble" title="Pebble">
+                <div class="icon-shape-preview shape-pebble"></div>
+                <span>Pebble</span>
+              </button>
+              <button class="icon-shape-btn" data-shape="square" aria-label="Square" title="Square">
+                <div class="icon-shape-preview shape-square"></div>
+                <span>Square</span>
+              </button>
             </div>
           </div>
         </div>
@@ -403,6 +536,7 @@
                 <span class="toggle-slider"></span>
               </label>
             </div>
+            </div>
             <div class="settings-toggle-row row-last">
               <span>Usage Insight</span>
               <label class="toggle-switch">
@@ -431,6 +565,46 @@
     <!-- Logo -->
     <div class="logo-container fade-in" id="main-logo-container">
       <img src="icons/icon.svg" alt="New WEB" class="logo" id="main-logo-img" width="76" height="76">
+      
+      <div class="loader" id="loader-logo" style="display: none; --size: 0.76;">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <defs>
+            <mask id="clipping">
+              <polygon points="0,0 100,0 100,100 0,100" fill="black"></polygon>
+              <polygon points="25,25 75,25 50,75" fill="white"></polygon>
+              <polygon points="50,25 75,75 25,75" fill="white"></polygon>
+              <polygon points="35,35 65,35 50,65" fill="white"></polygon>
+              <polygon points="35,35 65,35 50,65" fill="white"></polygon>
+              <polygon points="35,35 65,35 50,65" fill="white"></polygon>
+              <polygon points="35,35 65,35 50,65" fill="white"></polygon>
+            </mask>
+          </defs>
+        </svg>
+        <div class="box"></div>
+      </div>
+      
+      <div class="wheel-and-hamster" id="hamster-logo" style="display: none; font-size: 6.33px;">
+        <div class="wheel"></div>
+        <div class="hamster">
+          <div class="hamster__body">
+            <div class="hamster__head">
+              <div class="hamster__ear"></div>
+              <div class="hamster__eye"></div>
+              <div class="hamster__nose"></div>
+            </div>
+            <div class="hamster__limb hamster__limb--fr"></div>
+            <div class="hamster__limb hamster__limb--fl"></div>
+            <div class="hamster__limb hamster__limb--br"></div>
+            <div class="hamster__limb hamster__limb--bl"></div>
+            <div class="hamster__tail"></div>
+          </div>
+        </div>
+        <div class="spoke"></div>
+      </div>
+      
+      <div class="neon-loader" id="neon-logo" style="display: none; transform: scale(0.95);">
+        <div class="circle"></div>
+      </div>
     </div>
 
     <!-- Mode Toggle -->
